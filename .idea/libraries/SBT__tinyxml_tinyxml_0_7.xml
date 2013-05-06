@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="SBT: tinyxml:tinyxml:0.7">
+    <CLASSES>
+      <root url="jar:///opt/play-framework/repository/cache/tinyxml/tinyxml/jars/tinyxml-0.7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="SBT: megamek:megamek:0.34.10">
+    <CLASSES>
+      <root url="jar:///opt/play-framework/repository/cache/megamek/megamek/jars/megamek-0.34.10.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
