@@ -1,3 +1,5 @@
+package global
+
 import info.icephoenix.mmm.MegamekManager
 import play.api._
 
