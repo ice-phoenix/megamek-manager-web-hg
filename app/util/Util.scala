@@ -17,3 +17,24 @@ object JsonRestFailure {
   def apply(payload: String): JsValue = apply(Json.toJson(payload))
 
 }
+
+object BetterStringOps {
+
+  class BetterString(val s: String) extends AnyVal {
+    def camelCaseToDashed() = {
+      val res = (new StringBuilder /: s) {
+        (sb, c) => {
+          if (c.isUpper) sb.append('-')
+          sb.append(c.toLower)
+        }
+      }
+      res.charAt(0) match {
+        case '-' => res.deleteCharAt(0).result()
+        case _ => res.result()
+      }
+    }
+  }
+
+  implicit def StringToBetterString(s: String) = new BetterString(s)
+
+}

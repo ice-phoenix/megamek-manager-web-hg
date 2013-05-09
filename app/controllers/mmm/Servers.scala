@@ -11,10 +11,10 @@ import scala.concurrent.duration._
 import util._
 
 object Servers
-  extends Controller
-  with MmmMsgJsonifier {
+  extends Controller {
 
   import play.api.libs.concurrent.Execution.Implicits._
+  import util.MmmJsonifier._
 
   implicit val timeout = Timeout(5 seconds)
 
