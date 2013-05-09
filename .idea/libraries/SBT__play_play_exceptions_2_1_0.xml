@@ -4,6 +4,8 @@
       <root url="jar:///opt/play-framework/repository/local/play/play-exceptions/2.1.0/jars/play-exceptions.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar:///opt/play-framework/repository/local/play/play-exceptions/2.1.0/srcs/play-exceptions-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>
