@@ -1,9 +1,5 @@
-function ServerListCtrl($scope, $http) {
-  $http.get('/mmm/servers/').success(function(json) {
-    if (json.success) {
-        $scope.servers = json.payload.stats;
-    }
-  })
+function ServerListCtrl($scope, mmmServer) {
+  $scope.servers = mmmServer.query();
 
   $scope.setSortBy = function(sortBy, sortByReversed) {
     $scope.sortByReversed = (sortBy === $scope.sortBy ? !$scope.sortByReversed : false);

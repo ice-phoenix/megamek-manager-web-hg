@@ -1,26 +1,26 @@
 <div class="content fluid">
-    <div class="server-list">
-        <table class="server-list">
-            <thead>
-            <tr>
-                <th><a class="action" ng-click="setSortBy('port')">
-                    Port
-                </a></th>
-                <th><a class="action" ng-click="setSortBy('players.length')">
-                    Players
-                </a></th>
-                <th><a class="action" ng-click="setSortBy('type')">
-                    Status
-                </a></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="srv in servers | orderBy:sortBy:sortByReversed">
-                <td>{{srv.port}}</td>
-                <td>{{srv.players}}</td>
-                <td>{{srv.type}}</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+  <div class="server-list">
+    <table class="server-list">
+      <thead>
+      <tr>
+        <th><a class="action" ng-click="setSortBy('port')">
+          Port
+        </a></th>
+        <th><a class="action" ng-click="setSortBy('players.length')">
+          Players
+        </a></th>
+        <th><a class="action" ng-click="setSortBy('type')">
+          Status
+        </a></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="srv in servers | orderBy:sortBy:sortByReversed">
+        <td>{{srv.port}}</td>
+        <td>{{srv.players}}</td>
+        <td>{{srv.type}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

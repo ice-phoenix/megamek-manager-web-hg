@@ -43,7 +43,10 @@ object MmmJsonifier {
     }
   }
 
-  implicit val AllServersStatsResponseWrites: Writes[AllServersStatsResponse] =
-    (__ \ 'stats).write[Seq[ServerStatus]].contramap { res: AllServersStatsResponse => res.stats }
+  implicit val AllServersStatsResponseWrites = new Writes[AllServersStatsResponse] {
+    def writes(v: AllServersStatsResponse) = {
+      Json.toJson(v.stats.map(s => Json.toJson(s)))
+    }
+  }
 
 }
