@@ -1,35 +1,49 @@
 package util
 
-import BetterStringOps._
+import BetterStringOps.Implicits._
 import info.icephoenix.mmm.msgs._
 import play.api.libs.functional.syntax._
+import play.api.libs.json.Writes._
 import play.api.libs.json._
 
 object MmmJsonifier {
 
-  def TypeTagger[T](v: T) =
-    __.json.update(
-      (__ \ 'type).json.put(
-        Json.toJson(v.getClass.getSimpleName.camelCaseToDashed())
-      )
-    )
+  object BetterJson {
 
-  implicit val ServerOnlineWrites = Json.writes[ServerOnline]
-  implicit val ServerTimedOutWrites = Json.writes[ServerTimedOut]
-  implicit val ServerFailedWrites = Json.writes[ServerFailed]
+    def TypeTagger[T: Manifest]: Writes[JsValue] =
+      (__.write[JsValue] ~ (__ \ 'type).write[String]) {
+        json: JsValue => (json, manifest[T].runtimeClass.getSimpleName.camelCaseToDashed())
+      }
+
+    class BetterWrites[-A: Manifest](val writes: Writes[A]) {
+      def mkTypeTagged(): Writes[A] = {
+        writes.transform { TypeTagger[A] }
+      }
+    }
+
+    object Implicits {
+      implicit def Writes2BetterWrites[A: Manifest](writes: Writes[A]) = new BetterWrites[A](writes)
+    }
+
+  }
+
+  import BetterJson.Implicits._
+
+  implicit val ServerOnlineWrites = Json.writes[ServerOnline].mkTypeTagged()
+  implicit val ServerTimedOutWrites = Json.writes[ServerTimedOut].mkTypeTagged()
+  implicit val ServerFailedWrites = Json.writes[ServerFailed].mkTypeTagged()
 
   implicit val ServerStatusWrites = new Writes[ServerStatus] {
     def writes(ss: ServerStatus) = {
-      val res = ss match {
+      ss match {
         case so: ServerOnline => Json.toJson(so)
         case st: ServerTimedOut => Json.toJson(st)
         case sf: ServerFailed => Json.toJson(sf)
       }
-      res.transform { TypeTagger(ss) }.get
     }
   }
 
   implicit val AllServersStatsResponseWrites: Writes[AllServersStatsResponse] =
-    (__ \ 'stats).write(Writes.seq[ServerStatus]).contramap { res: AllServersStatsResponse => res.stats }
+    (__ \ 'stats).write[Seq[ServerStatus]].contramap { res: AllServersStatsResponse => res.stats }
 
 }

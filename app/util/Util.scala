@@ -35,6 +35,8 @@ object BetterStringOps {
     }
   }
 
-  implicit def StringToBetterString(s: String) = new BetterString(s)
+  object Implicits {
+    implicit def String2BetterString(s: String) = new BetterString(s)
+  }
 
 }
