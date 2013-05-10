@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.redirect(to = "/mmm/servers/")
+GET     /                           controllers.Application.index
 
 # mmm
 GET     /mmm/servers/               controllers.mmm.Servers.list

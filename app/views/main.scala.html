@@ -1,15 +1,42 @@
-@(title: String)(content: Html)
-
 <!DOCTYPE html>
 
-<html>
-    <head>
-        <title>@title</title>
-        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
-        <script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")" type="text/javascript"></script>
-    </head>
-    <body>
-        @content
-    </body>
+<html lang="en" ng-app>
+<head>
+    <meta charset="utf-8">
+    <title>MegaMek Manager</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/bootstrap.css">
+    <script src="/assets/javascripts/angular.min.js"></script>
+    <script src="/assets/javascripts/mmm/controllers.js"></script>
+</head>
+<body ng-controller="ServerListCtrl">
+
+<div class="content fluid">
+    <div class="server-list">
+        <table class="server-list">
+            <thead>
+            <tr>
+                <th><a class="action" ng-click="setSortBy('port')">
+                    Port
+                </a></th>
+                <th><a class="action" ng-click="setSortBy('players.length')">
+                    Players
+                </a></th>
+                <th><a class="action" ng-click="setSortBy('type')">
+                    Status
+                </a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="srv in servers | orderBy:sortBy:sortByReversed">
+                <td>{{srv.port}}</td>
+                <td>{{srv.players}}</td>
+                <td>{{srv.type}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
 </html>
