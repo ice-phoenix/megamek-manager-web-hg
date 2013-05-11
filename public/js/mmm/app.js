@@ -1,5 +1,5 @@
-angular.module('mmm', ['ui.bootstrap', 'mmm.ServerServices'])
+angular.module('mmm', ['mmm.serverlist'])
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider
-      .when('/', { templateUrl: '/assets/templates/server-list.tmpl', controller: ServerListCtrl })
+      .when('/', { redirectTo: '/servers' })
 }]);
