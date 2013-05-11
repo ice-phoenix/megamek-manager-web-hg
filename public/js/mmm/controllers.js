@@ -7,5 +7,17 @@ function ServerListCtrl($scope, mmmServer) {
     if (typeof sortByReversed !== 'undefined') $scope.sortByReversed = sortByReversed;
   }
 
+  $scope.getSortByCls = function(sortBy) {
+    if (sortBy === $scope.sortBy) {
+      if ($scope.sortByReversed) {
+        return "icon-arrow-up";
+      } else {
+        return "icon-arrow-down";
+      }
+    } else {
+      return "icon-";
+    }
+  }
+
   $scope.setSortBy('players.length', true);
 }

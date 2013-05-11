@@ -1,16 +1,16 @@
 <div class="row-fluid">
   <div class="span6 offset3">
-    <table class="server-list">
+    <table class="table table-striped table-bordered server-list">
       <thead>
       <tr>
-        <th><a class="action" ng-click="setSortBy('port')">
-          Port
+        <th><a ng-click="setSortBy('port')">
+          Port<i ng-class="getSortByCls('port')"></i>
         </a></th>
-        <th><a class="action" ng-click="setSortBy('players.length')">
-          Players
+        <th><a ng-click="setSortBy('players.length')">
+          Players<i ng-class="getSortByCls('players.length')"></i>
         </a></th>
-        <th><a class="action" ng-click="setSortBy('type')">
-          Status
+        <th><a ng-click="setSortBy('type')">
+          Status<i ng-class="getSortByCls('type')"></i>
         </a></th>
       </tr>
       </thead>
