@@ -1,14 +1,16 @@
-angular.module('mmm.serverlist', ['ui.bootstrap', 'mmm.rest.servers'])
+angular.module('mmm.serverlist', ['ui.bootstrap', 'mmm.rest.servers', 'mmm.notificationlist', 'util.notifications'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider
     .when('/servers', {
-      templateUrl: '/assets/templates/server-list.tmpl',
+      templateUrl: '/assets/templates/mmm/server-list.tmpl',
       controller: 'ServerListCtrl'
     })
 }])
 
-.controller('ServerListCtrl', ['$scope', 'Servers', function($scope, Servers) {
+.controller('ServerListCtrl', ['$scope', 'Servers', 'notifications', function($scope, Servers, notifications) {
+  $scope.notifications = notifications;
+
   $scope.queryServers = function() {
     Servers.query({}, function(json) {
       $scope.servers = Servers.transform(json);
@@ -23,7 +25,9 @@ angular.module('mmm.serverlist', ['ui.bootstrap', 'mmm.rest.servers'])
         $scope.servers.push(Servers.transform(json));
       },
       function(error) {
-
+        var msg = 'Unknown error';
+        if (error.status === 404) msg = 'Cannot find the requested object';
+        notifications.addCurrent({type: 'error', msg: msg});
       });
   };
 
