@@ -15,7 +15,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="srv in servers | orderBy:sortBy:sortByReversed">
+      <tr ng-repeat="srv in servers | orderBy:sortBy:sortByReversed" ng-class="srv.statusCls">
         <td>{{srv.port}}</td>
         <td>{{srv.players.join(', ')}}</td>
         <td>{{srv.status}}</td>

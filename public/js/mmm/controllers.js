@@ -8,6 +8,9 @@ function ServerListCtrl($scope, mmmServer) {
                    srv.type === 'server-timed-out' ? 'Timed out' :
                    srv.type === 'server-failed' ? 'Failed' :
                    'Unknown';
+      res.statusCls = srv.type === 'server-online' ? 'success' :
+                      srv.type === 'server-timed-out' ? 'warning' :
+                      'error';
       return res;
     });
   });
