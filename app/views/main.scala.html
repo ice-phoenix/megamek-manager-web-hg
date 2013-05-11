@@ -3,19 +3,24 @@
 <html lang="en" ng-app="mmm">
 <head>
   <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>MegaMek Manager</title>
   <link rel="stylesheet" href="/assets/css/main.css">
-  <link rel="stylesheet" href="/assets/css/bootstrap.css">
+  <link rel="stylesheet" href="/assets/css/bootstrap.css" media="screen">
 </head>
 <body>
 
-<div ng-view></div>
+<div class="container-fluid" ng-view></div>
 
-<script src="/assets/javascripts/angular.min.js"></script>
-<script src="/assets/javascripts/angular-resource.min.js"></script>
-<script src="/assets/javascripts/mmm/app.js"></script>
-<script src="/assets/javascripts/mmm/controllers.js"></script>
-<script src="/assets/javascripts/mmm/services.js"></script>
+<script src="/assets/js/angular.js"></script>
+<script src="/assets/js/angular-resource.js"></script>
+<script src="/assets/js/ui-bootstrap-0.3.0.js"></script>
+
+<script src="/assets/js/mmm/app.js"></script>
+<script src="/assets/js/mmm/controllers.js"></script>
+<script src="/assets/js/mmm/services.js"></script>
 
 </body>
 </html>
