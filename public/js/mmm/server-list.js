@@ -11,27 +11,16 @@ angular.module('mmm.serverlist', ['ui.bootstrap', 'mmm.rest.servers'])
 .controller('ServerListCtrl', ['$scope', 'Servers', function($scope, Servers) {
   $scope.queryServers = function() {
     Servers.query({}, function(json) {
-      $scope.servers = json.map(function(srv) {
-        var res = {};
-        res.port = srv.port;
-        res.players = srv.players;
-        res.status = srv.type === 'server-online' ? 'Online' :
-                     srv.type === 'server-timed-out' ? 'Timed out' :
-                     srv.type === 'server-failed' ? 'Failed' :
-                     'Unknown';
-        res.statusCls = srv.type === 'server-online' ? 'success' :
-                        srv.type === 'server-timed-out' ? 'warning' :
-                        'error';
-        return res;
-      });
+      $scope.servers = Servers.transform(json);
     });
   };
 
-  $scope.createServer = function(port) {
-    mmmServer.put(
-      {serverPort: port},
+  $scope.startServer = function(port) {
+    if (angular.isUndefined(port)) port = $scope.startServerPort;
+    Servers.put(
+      {port: port},
       function(json) {
-
+        $scope.servers.push(Servers.transform(json));
       },
       function(error) {
 
@@ -40,8 +29,8 @@ angular.module('mmm.serverlist', ['ui.bootstrap', 'mmm.rest.servers'])
 
   $scope.setSortBy = function(sortBy, sortByReversed) {
     $scope.sortByReversed = (sortBy === $scope.sortBy ? !$scope.sortByReversed : false);
-    if (typeof sortBy !== 'undefined') $scope.sortBy = sortBy;
-    if (typeof sortByReversed !== 'undefined') $scope.sortByReversed = sortByReversed;
+    if (angular.isDefined(sortBy)) $scope.sortBy = sortBy;
+    if (angular.isDefined(sortByReversed)) $scope.sortByReversed = sortByReversed;
   }
 
   $scope.getSortByCls = function(sortBy) {
@@ -56,7 +45,9 @@ angular.module('mmm.serverlist', ['ui.bootstrap', 'mmm.rest.servers'])
     }
   }
 
-  $scope.setSortBy('players.length', true);
+  $scope.startServerPort = 2345;
+  $scope.sortBy = 'players.length';
+  $scope.sortByReversed = true;
 
   $scope.queryServers();
 }]);
