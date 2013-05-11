@@ -9,16 +9,16 @@
         <th><a ng-click="setSortBy('players.length')">
           Players<i ng-class="getSortByCls('players.length')"></i>
         </a></th>
-        <th><a ng-click="setSortBy('type')">
-          Status<i ng-class="getSortByCls('type')"></i>
+        <th><a ng-click="setSortBy('status')">
+          Status<i ng-class="getSortByCls('status')"></i>
         </a></th>
       </tr>
       </thead>
       <tbody>
       <tr ng-repeat="srv in servers | orderBy:sortBy:sortByReversed">
         <td>{{srv.port}}</td>
-        <td>{{srv.players}}</td>
-        <td>{{srv.type}}</td>
+        <td>{{srv.players.join(', ')}}</td>
+        <td>{{srv.status}}</td>
       </tr>
       </tbody>
     </table>

@@ -1,5 +1,16 @@
 function ServerListCtrl($scope, mmmServer) {
-  $scope.servers = mmmServer.query();
+  mmmServer.query({}, function(json) {
+    $scope.servers = json.map(function(srv) {
+      var res = {};
+      res.port = srv.port;
+      res.players = srv.players;
+      res.status = srv.type === 'server-online' ? 'Online' :
+                   srv.type === 'server-timed-out' ? 'Timed out' :
+                   srv.type === 'server-failed' ? 'Failed' :
+                   'Unknown';
+      return res;
+    });
+  });
 
   $scope.setSortBy = function(sortBy, sortByReversed) {
     $scope.sortByReversed = (sortBy === $scope.sortBy ? !$scope.sortByReversed : false);
