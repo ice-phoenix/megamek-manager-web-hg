@@ -1,7 +1,7 @@
 package global
 
 import info.icephoenix.mmm.MegamekManager
-import info.icephoenix.mmm.msgs._
+import info.icephoenix.mmm.data._
 import play.api._
 
 object Global extends GlobalSettings {

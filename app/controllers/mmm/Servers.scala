@@ -3,7 +3,7 @@ package controllers.mmm
 import akka.pattern._
 import akka.util.Timeout
 import global.Global
-import info.icephoenix.mmm.msgs._
+import info.icephoenix.mmm.data._
 import java.util.concurrent.TimeoutException
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -22,7 +22,7 @@ object Servers
 
   def list = Action {
     Async {
-      ask(mmm.RunnerSup, AllServersStatsRequest).mapTo[AllServersStatsResponse].map {
+      ask(mmm.RunnerSup, AllServerReport).mapTo[AllServerStatus].map {
         res => Ok(
           JsonRestSuccess(Json.toJson(res))
         )

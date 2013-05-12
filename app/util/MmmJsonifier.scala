@@ -1,7 +1,7 @@
 package util
 
 import BetterStringOps.Implicits._
-import info.icephoenix.mmm.msgs._
+import info.icephoenix.mmm.data._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
@@ -32,20 +32,22 @@ object MmmJsonifier {
   implicit val ServerOnlineWrites = Json.writes[ServerOnline].mkTypeTagged()
   implicit val ServerTimedOutWrites = Json.writes[ServerTimedOut].mkTypeTagged()
   implicit val ServerFailedWrites = Json.writes[ServerFailed].mkTypeTagged()
+  implicit val ServerStoppedWrites = Json.writes[ServerStopped].mkTypeTagged()
 
   implicit val ServerStatusWrites = new Writes[ServerStatus] {
-    def writes(ss: ServerStatus) = {
-      ss match {
+    def writes(status: ServerStatus) = {
+      status match {
         case so: ServerOnline => Json.toJson(so)
         case st: ServerTimedOut => Json.toJson(st)
         case sf: ServerFailed => Json.toJson(sf)
+        case ss: ServerStopped => Json.toJson(ss)
       }
     }
   }
 
-  implicit val AllServersStatsResponseWrites = new Writes[AllServersStatsResponse] {
-    def writes(v: AllServersStatsResponse) = {
-      Json.toJson(v.stats.map(s => Json.toJson(s)))
+  implicit val AllServerStatusWrites = new Writes[AllServerStatus] {
+    def writes(v: AllServerStatus) = {
+      Json.toJson(v.status.map(s => Json.toJson(s)))
     }
   }
 
