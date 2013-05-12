@@ -42,10 +42,10 @@ object Servers
     Async {
       Sender(mmm.RunnerSup, StartServer(port, password)).expects[ServerStatus] {
         res: ServerStatus => Created(JsonRestSuccess(Json.toJson(res)))
-      } recover defaultRecover.orElse {
+      } recover {
         case s: ServerAlreadyRunningOn =>
           Conflict(JsonRestFailure("Server already running on port %s".format(s.port)))
-      }
+      } recover defaultRecover
     }
   }
 }

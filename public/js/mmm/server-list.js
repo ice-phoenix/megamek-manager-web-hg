@@ -25,8 +25,7 @@ angular.module('mmm.serverlist', ['ui.bootstrap', 'mmm.rest.servers', 'mmm.notif
         $scope.servers.push(Servers.transform(json));
       },
       function(error) {
-        var msg = 'Unknown error';
-        if (error.status === 404) msg = 'Cannot find the requested object';
+        var msg = error.data.msg || 'Unknown error';
         notifications.addCurrent({type: 'error', msg: msg});
       });
   };

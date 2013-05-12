@@ -6,7 +6,7 @@ object JsonRestSuccess {
 
   def apply(payload: JsValue): JsValue = payload
 
-  def apply(payload: String): JsValue = apply(Json.toJson(payload))
+  def apply(payload: String): JsValue = apply(Json.obj("msg" -> payload))
 
 }
 
@@ -14,7 +14,7 @@ object JsonRestFailure {
 
   def apply(payload: JsValue): JsValue = payload
 
-  def apply(payload: String): JsValue = apply(Json.toJson(payload))
+  def apply(payload: String): JsValue = apply(Json.obj("msg" -> payload))
 
 }
 

@@ -2,7 +2,7 @@ angular.module('mmm.rest.servers', ['ngResource'])
 
 .factory('Servers', ['$resource', function($resource) {
   var Servers = $resource(
-    '/mmm/servers\\/:port',
+    '/mmm/servers/:port',
     {},
     {
       'put': { method: 'PUT', params: {port: '@port'} }
@@ -11,8 +11,8 @@ angular.module('mmm.rest.servers', ['ngResource'])
 
   Servers._transform = function(srv) {
     var res = {};
-    res.port = srv.port;
-    res.players = srv.players;
+    res.port = srv.port || 0;
+    res.players = srv.players || [];
     res.status = srv.type === 'server-online' ? 'Online' :
                  srv.type === 'server-timed-out' ? 'Timed out' :
                  srv.type === 'server-failed' ? 'Failed' :
