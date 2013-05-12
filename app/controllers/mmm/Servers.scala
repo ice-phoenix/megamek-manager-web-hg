@@ -1,6 +1,5 @@
 package controllers.mmm
 
-import akka.pattern._
 import akka.util.Timeout
 import global.Global
 import info.icephoenix.mmm.data._
@@ -20,23 +19,33 @@ object Servers
 
   val mmm = Global.mmm
 
-  def list = Action {
+  val defaultRecover: PartialFunction[Throwable, Result] = {
+    case t: TimeoutException =>
+      RequestTimeout(
+        JsonRestFailure("Server statistics timed out")
+      )
+    case e: Exception =>
+      InternalServerError(
+        JsonRestFailure("Oops: %s".format(e.getMessage))
+      )
+  }
+
+  def query = Action {
     Async {
-      ask(mmm.RunnerSup, AllServerReport).mapTo[AllServerStatus].map {
-        res => Ok(
-          JsonRestSuccess(Json.toJson(res))
-        )
-      } recover {
-        case t: TimeoutException =>
-          RequestTimeout(
-            JsonRestFailure("Server statistics timed out")
-          )
-        case e: Exception =>
-          InternalServerError(
-            JsonRestFailure("Oops: %s".format(e.getMessage))
-          )
-      }
+      Sender(mmm.RunnerSup, AllServerReport).expects[AllServerStatus] {
+        res: AllServerStatus => Ok(JsonRestSuccess(Json.toJson(res)))
+      } recover defaultRecover
     }
   }
 
+  def create(port: Int, password: String) = Action {
+    Async {
+      Sender(mmm.RunnerSup, StartServer(port, password)).expects[ServerStatus] {
+        res: ServerStatus => Created(JsonRestSuccess(Json.toJson(res)))
+      } recover defaultRecover.orElse {
+        case s: ServerAlreadyRunningOn =>
+          Conflict(JsonRestFailure("Server already running on port %s".format(s.port)))
+      }
+    }
+  }
 }
