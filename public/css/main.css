@@ -1,0 +1,4 @@
+.close.danger:hover {
+  color: DarkRed;
+  opacity: 0.8;
+}
