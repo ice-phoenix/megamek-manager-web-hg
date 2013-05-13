@@ -7,22 +7,26 @@
         <table class="table table-striped table-bordered">
           <thead>
           <tr>
-            <th><a ng-click="setSortBy('port')">
+            <th><a ng-click="toggleSortBy('port')">
               Port<i ng-class="getSortByCls('port')"></i>
             </a></th>
-            <th><a ng-click="setSortBy('players.length')">
-              Players<i ng-class="getSortByCls('players.length')"></i>
+            <th><a ng-click="toggleSortBy('players')">
+              Players<i ng-class="getSortByCls('players')"></i>
             </a></th>
-            <th><a ng-click="setSortBy('status')">
+            <th><a ng-click="toggleSortBy('status')">
               Status<i ng-class="getSortByCls('status')"></i>
             </a></th>
+            <th>
+              Action
+            </th>
           </tr>
           </thead>
           <tbody>
-          <tr ng-class="srv.statusCls" ng-repeat="srv in servers | orderBy:sortBy:sortByReversed">
-            <td>{{srv.port}}</td>
-            <td>{{srv.players.join(', ')}}</td>
-            <td>{{srv.status}}</td>
+          <tr ng-class="servers.get(id).statusCls" ng-repeat="id in servers.ids | orderBy:getSortByKey:sortByReversed">
+            <td>{{servers.get(id).port}}</td>
+            <td>{{servers.get(id).players.join(', ')}}</td>
+            <td>{{servers.get(id).status}}</td>
+            <td><a class="close" ng-click="stopServer(id)">&times;</a></td>
           </tr>
           </tbody>
         </table>

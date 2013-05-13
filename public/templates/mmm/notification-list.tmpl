@@ -1,6 +1,6 @@
 <div ng-controller="NotificationListCtrl" ng-show="notifications.get().length">
-  <div ng-class="getNotificationCls(notification)" ng-repeat="notification in notifications.get()">
-    <button type="button" class="close" ng-click="notifications.remove(notification)">&times;</button>
-    {{notification.msg}}
+  <div ng-class="getNotificationCls(n)" ng-repeat="n in notifications.get()">
+    {{n.msg}}
+    <button type="button" class="close" ng-click="notifications.remove(n)">&times;</button>
   </div>
 </div>

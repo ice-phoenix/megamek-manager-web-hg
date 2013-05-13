@@ -1,4 +1,8 @@
-angular.module('mmm.serverlist', ['ui.bootstrap', 'mmm.rest.servers', 'mmm.notificationlist', 'util.notifications'])
+angular.module('mmm.serverlist', ['ui.bootstrap',
+                                  'mmm.rest.servers',
+                                  'mmm.notificationlist',
+                                  'util.notifications',
+                                  'util.collections'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider
@@ -8,13 +12,33 @@ angular.module('mmm.serverlist', ['ui.bootstrap', 'mmm.rest.servers', 'mmm.notif
     })
 }])
 
-.controller('ServerListCtrl', ['$scope', 'Servers', 'notifications', function($scope, Servers, notifications) {
+.controller('ServerListCtrl', ['$scope', 'Servers', 'notifications', 'collections',
+                      function( $scope,   Servers,   notifications,   collections ) {
+
   $scope.notifications = notifications;
 
+  $scope.servers = collections.lut(function(e) { return e.port; });
+
+  var defaultErrorHandler = function(error) {
+    var msg = error.data.msg || 'Unknown error';
+    notifications.addCurrent({type: 'error', msg: msg});
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // JSON REST API
+  /////////////////////////////////////////////////////////////////////////////
+
   $scope.queryServers = function() {
-    Servers.query({}, function(json) {
-      $scope.servers = Servers.transform(json);
-    });
+    Servers.query(
+      {},
+      function(json) {
+        $scope.servers.clear();
+        angular.forEach(Servers.transform(json), function(e) {
+          $scope.servers.add(e);
+        });
+      },
+      defaultErrorHandler
+    );
   };
 
   $scope.startServer = function(port) {
@@ -22,18 +46,27 @@ angular.module('mmm.serverlist', ['ui.bootstrap', 'mmm.rest.servers', 'mmm.notif
     Servers.put(
       {port: port},
       function(json) {
-        $scope.servers.push(Servers.transform(json));
+        $scope.servers.add(Servers.transform(json));
+        notifications.addCurrent({type: 'success', msg: ['Started server on port', port].join(' ')});
       },
-      function(error) {
-        var msg = error.data.msg || 'Unknown error';
-        notifications.addCurrent({type: 'error', msg: msg});
-      });
+      defaultErrorHandler
+    );
   };
 
-  $scope.setSortBy = function(sortBy, sortByReversed) {
+  $scope.stopServer = function(port) {
+    Servers.remove(
+      {port: port},
+      function(json) {
+        $scope.servers.remove(port);
+        notifications.addCurrent({type: 'success', msg: ['Stopped server on port', port].join(' ')});
+      },
+      defaultErrorHandler
+    );
+  }
+
+  $scope.toggleSortBy = function(sortBy) {
     $scope.sortByReversed = (sortBy === $scope.sortBy ? !$scope.sortByReversed : false);
-    if (angular.isDefined(sortBy)) $scope.sortBy = sortBy;
-    if (angular.isDefined(sortByReversed)) $scope.sortByReversed = sortByReversed;
+    $scope.sortBy = sortBy;
   }
 
   $scope.getSortByCls = function(sortBy) {
@@ -48,8 +81,18 @@ angular.module('mmm.serverlist', ['ui.bootstrap', 'mmm.rest.servers', 'mmm.notif
     }
   }
 
+  $scope.getSortByKey = function(id) {
+    var e = $scope.servers.get(id);
+    switch ($scope.sortBy) {
+      case 'port': return e.port;
+      case 'players': return e.players.length;
+      case 'status': return e.status;
+      default: return 0;
+    }
+  };
+
   $scope.startServerPort = 2345;
-  $scope.sortBy = 'players.length';
+  $scope.sortBy = 'players';
   $scope.sortByReversed = true;
 
   $scope.queryServers();

@@ -44,8 +44,20 @@ object Servers
         res: ServerStatus => Created(JsonRestSuccess(Json.toJson(res)))
       } recover {
         case s: ServerAlreadyRunningOn =>
-          Conflict(JsonRestFailure("Server already running on port %s".format(s.port)))
+          Conflict(JsonRestFailure(s.getMessage))
       } recover defaultRecover
     }
   }
+
+  def delete(port: Int) = Action {
+    Async {
+      Sender(mmm.RunnerSup, StopServer(port)).expects[ServerStopped] {
+        res: ServerStopped => Ok(JsonRestSuccess(Json.toJson(res)))
+      } recover {
+        case s: ServerNotRunningOn =>
+          NotFound(JsonRestFailure(s.getMessage))
+      } recover defaultRecover
+    }
+  }
+
 }
