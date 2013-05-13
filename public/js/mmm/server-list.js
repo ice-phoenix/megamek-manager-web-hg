@@ -2,6 +2,7 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
                                   'mmm.rest.servers',
                                   'mmm.notificationlist',
                                   'util.notifications',
+                                  'util.modals',
                                   'util.collections'])
 
 .config(['$routeProvider', function($routeProvider) {
@@ -12,8 +13,8 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
     })
 }])
 
-.controller('ServerListCtrl', ['$scope', 'Servers', 'notifications', 'collections',
-                      function( $scope,   Servers,   notifications,   collections ) {
+.controller('ServerListCtrl', ['$scope', '$dialog', 'Servers', 'notifications', 'collections',
+                      function( $scope,   $dialog,   Servers,   notifications,   collections ) {
 
   $scope.notifications = notifications;
 
@@ -64,6 +65,45 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
     );
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+  // Dialogs
+  /////////////////////////////////////////////////////////////////////////////
+
+  $scope.stopServerWithConfirm = function(port) {
+    var e = $scope.servers.get(port);
+
+    var title = 'Stop server';
+    var msg = ['Stop server on port ', port, '?'].join('');
+    var warn = e.players.length > 0 ? [e.players.length, ' players are ONLINE'].join('') : '';
+    var buttons = [
+      { label:'OK',     result: true,  cssClass: 'btn-error' },
+      { label:'Cancel', result: false, cssClass: 'btn-info' }
+    ];
+
+    var confirm = $dialog.dialog({
+      templateUrl: '/assets/templates/mmm/modal-message-box.tmpl',
+      controller: 'ModalMessageBoxCtrl',
+      resolve: {
+        model: function() {
+          return {
+            title: title,
+            msg: msg,
+            warn: warn,
+            buttons: buttons
+          };
+        }
+      }
+    });
+
+    confirm.open().then(function(result) {
+        if (result === true) $scope.stopServer(port);
+    });
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Sorting
+  /////////////////////////////////////////////////////////////////////////////
+
   $scope.toggleSortBy = function(sortBy) {
     $scope.sortByReversed = (sortBy === $scope.sortBy ? !$scope.sortByReversed : false);
     $scope.sortBy = sortBy;
@@ -90,6 +130,10 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
       default: return 0;
     }
   };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Init
+  /////////////////////////////////////////////////////////////////////////////
 
   $scope.startServerPort = 2345;
   $scope.sortBy = 'players';
