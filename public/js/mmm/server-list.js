@@ -13,8 +13,8 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
     })
 }])
 
-.controller('ServerListCtrl', ['$scope', '$dialog', 'Servers', 'notifications', 'collections',
-                      function( $scope,   $dialog,   Servers,   notifications,   collections ) {
+.controller('ServerListCtrl', ['$scope', 'modals', 'Servers', 'notifications', 'collections',
+                      function( $scope,   modals,   Servers,   notifications,   collections ) {
 
   $scope.notifications = notifications;
 
@@ -76,24 +76,11 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
     var msg = ['Stop server on port ', port, '?'].join('');
     var warn = e.players.length > 0 ? [e.players.length, ' players are ONLINE'].join('') : '';
     var buttons = [
-      { label:'OK',     result: true,  cssClass: 'btn-error' },
+      { label:'OK',     result: true,  cssClass: 'btn-danger' },
       { label:'Cancel', result: false, cssClass: 'btn-info' }
     ];
 
-    var confirm = $dialog.dialog({
-      templateUrl: '/assets/templates/mmm/modal-message-box.tmpl',
-      controller: 'ModalMessageBoxCtrl',
-      resolve: {
-        model: function() {
-          return {
-            title: title,
-            msg: msg,
-            warn: warn,
-            buttons: buttons
-          };
-        }
-      }
-    });
+    var confirm = modals.confirm(title, msg, warn, buttons);
 
     confirm.open().then(function(result) {
         if (result === true) $scope.stopServer(port);
