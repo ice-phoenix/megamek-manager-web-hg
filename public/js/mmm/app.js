@@ -1,4 +1,5 @@
 angular.module('mmm', ['ui.bootstrap',
+                       'mmm.adminpanel',
                        'mmm.serverlist',
                        'util.notifications'])
 
