@@ -5,9 +5,6 @@ angular.module('mmm', ['ui.bootstrap',
 
 .config(['$routeProvider', "$dialogProvider", function($routeProvider, $dialogProvider) {
 
-  $routeProvider
-    .when('/', { redirectTo: '/servers' });
-
   $dialogProvider.options({});
 
 }]);
