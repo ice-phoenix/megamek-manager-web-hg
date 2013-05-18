@@ -1,6 +1,5 @@
 angular.module('mmm.serverlist', ['ui.bootstrap',
                                   'mmm.rest.servers',
-                                  'mmm.notificationlist',
                                   'util.notifications',
                                   'util.modals',
                                   'util.collections'])
@@ -13,8 +12,8 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
     })
 }])
 
-.controller('ServerListCtrl', ['$scope', 'modals', 'Servers', 'notifications', 'collections',
-                      function( $scope,   modals,   Servers,   notifications,   collections ) {
+.controller('ServerListCtrl', ['$scope', 'Servers', 'notifications', 'modals', 'collections',
+                      function( $scope,   Servers,   notifications,   modals,   collections ) {
 
   $scope.notifications = notifications;
 
