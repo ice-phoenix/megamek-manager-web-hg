@@ -15,8 +15,6 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
 .controller('ServerListCtrl', ['$scope', 'Servers', 'notifications', 'modals', 'collections',
                       function( $scope,   Servers,   notifications,   modals,   collections ) {
 
-  $scope.notifications = notifications;
-
   $scope.servers = collections.lut(function(e) { return e.port; });
 
   var defaultErrorHandler = function(error) {
