@@ -4,7 +4,7 @@ angular.module('util.notifications', [])
   $scope.notifications = notifications;
 
   $scope.getNotificationCls = function(what) {
-    return 'alert alert-' + what.type;
+    return 'alert alert-compact alert-' + what.type;
   };
 }])
 
@@ -54,6 +54,12 @@ angular.module('util.notifications', [])
   };
 
   notificationService.clear = function() {
+    angular.forEach([notifications.STICKY, notifications.CURRENT], function(notificationsByType) {
+      notificationsByType.length = 0;
+    });
+  };
+
+  notificationService.clearAll = function() {
     angular.forEach(notifications, function(notificationsByType) {
       notificationsByType.length = 0;
     });

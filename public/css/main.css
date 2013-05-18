@@ -7,6 +7,22 @@ body {
   opacity: 0.8;
 }
 
+.close-notifications {
+  position: relative;
+  top: -20px;
+  right: -16px;
+}
+
+.alert-compact {
+  margin-bottom: 8px;
+}
+
+.alert-group {
+  outline: 1px solid #dddddd;
+  padding: 16px;
+  padding-bottom: 8px;
+}
+
 .img-32x32 {
   width: 32px;
   height: 32px;

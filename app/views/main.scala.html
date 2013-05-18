@@ -13,12 +13,12 @@
 </head>
 <body>
 
-<div class="row-fluid" ng-include="'/assets/templates/mmm/header.tmpl'"></div>
+<div ng-include="'/assets/templates/mmm/header.tmpl'"></div>
 
 <div class="row-fluid">
-  <div class="span2" ng-include="'/assets/templates/mmm/nav-menu.tmpl'"></div>
+  <div class="offset1 span1" ng-include="'/assets/templates/mmm/nav-menu.tmpl'"></div>
   <div class="span7" ng-view></div>
-  <div class="span3" ng-include="'/assets/templates/mmm/notification-list.tmpl'"></div>
+  <div class="span2" ng-include="'/assets/templates/mmm/notification-list.tmpl'"></div>
 </div>
 
 <script src="/assets/js/angular.js"></script>

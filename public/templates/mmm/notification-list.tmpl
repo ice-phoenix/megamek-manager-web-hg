@@ -1,4 +1,5 @@
-<div class="row-fluid" ng-controller="NotificationListCtrl" ng-show="notifications.get().length">
+<div class="row-fluid alert-group" ng-controller="NotificationListCtrl" ng-show="notifications.get().length">
+  <button type="button" class="close close-notifications" ng-click="notifications.clear()">&times;</button>
   <div ng-class="getNotificationCls(n)" ng-repeat="n in notifications.get()">
     {{n.msg}}
     <button type="button" class="close" ng-click="notifications.remove(n)">&times;</button>
