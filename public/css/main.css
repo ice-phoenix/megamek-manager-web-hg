@@ -1,4 +1,15 @@
+body {
+  padding-top: 4em;
+}
+
 .close.danger:hover {
   color: DarkRed;
   opacity: 0.8;
+}
+
+.img-32x32 {
+  width: 32px;
+  height: 32px;
+  margin: 0px;
+  padding: 4px;
 }
