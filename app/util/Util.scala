@@ -2,6 +2,15 @@ package util
 
 import play.api.libs.json._
 
+object Util {
+
+  def catchy[A](v: => A) =
+    try Some(v) catch {
+      case ex: Throwable => None
+    }
+
+}
+
 object JsonRestSuccess {
 
   def apply(payload: JsValue): JsValue = payload
