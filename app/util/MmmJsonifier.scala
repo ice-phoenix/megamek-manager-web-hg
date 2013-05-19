@@ -5,24 +5,25 @@ import info.icephoenix.mmm.data._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
+import scala.reflect.runtime.{universe => ru}
 
 object MmmJsonifier {
 
   object BetterJson {
 
-    def TypeTagger[T: Manifest]: Writes[JsValue] =
+    def TypeTagger[T: ru.TypeTag]: Writes[JsValue] =
       (__.write[JsValue] ~ (__ \ 'type).write[String]) {
-        json: JsValue => (json, manifest[T].runtimeClass.getSimpleName.camelCaseToDashed())
+        json: JsValue => (json, ru.typeOf[T].typeSymbol.name.toString.camelCaseToDashed())
       }
 
-    class BetterWrites[-A: Manifest](val writes: Writes[A]) {
+    class BetterWrites[-A: ru.TypeTag](val writes: Writes[A]) {
       def mkTypeTagged(): Writes[A] = {
         writes.transform { TypeTagger[A] }
       }
     }
 
     object Implicits {
-      implicit def Writes2BetterWrites[A: Manifest](writes: Writes[A]) = new BetterWrites[A](writes)
+      implicit def Writes2BetterWrites[A: ru.TypeTag](writes: Writes[A]) = new BetterWrites[A](writes)
     }
 
   }
