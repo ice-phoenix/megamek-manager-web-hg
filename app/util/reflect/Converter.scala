@@ -12,8 +12,10 @@ trait Converter[T] {
   def defaultWrap(v: T, wType: ru.Type)(implicit tag: ru.TypeTag[T]): Any = {
     val wClassMirror = typeMirror.reflectClass(wType.typeSymbol.asClass)
 
-    wType.declaration(ru.nme.CONSTRUCTOR).asMethod.alternatives.collectFirst {
-      case m: ru.MethodSymbol if m.paramss.exists(p => p.length == 1 && ru.typeOf[T] <:< p.head.typeSignature) => m
+    wType.declaration(ru.nme.CONSTRUCTOR).asTerm.alternatives.collect {
+      case s if s.isMethod => s.asMethod
+    }.collectFirst {
+      case m if m.paramss.exists(p => p.length == 1 && ru.typeOf[T] <:< p.head.typeSignature) => m
     }.map {
       ctor => wClassMirror.reflectConstructor(ctor).apply(v)
     }.getOrElse {
