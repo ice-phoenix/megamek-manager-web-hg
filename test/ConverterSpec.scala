@@ -9,14 +9,14 @@ class ConverterSpec
   extends Specification
   with TryMatchers {
 
-  "String converter" >> new State {
+  "String converter should" >> new State {
     "Given the following URL string: ${http://ice-phoenix.info/}" << {
       urlString: String => url = urlString
     }
     "And the URL type" << {
       classType = ru.typeOf[URL]
     }
-    "After I convert the URL string to URL instance" << {
+    "If I convert the URL string to URL instance" << {
       URL = StringConverter.wrap(url, classType).map { _.asInstanceOf[URL] }
     }
     "Then conversion should succeed" << {

@@ -7,11 +7,11 @@ class ConfigManagerSpec
   extends Specification
   with TryMatchers {
 
-  "Reflective ConfigManager" >> new State {
+  "Reflective ConfigManager should" >> new State {
     "Given the following number: ${42}" << {
       v: String => value = v
     }
-    "After I reflect it into ${Servers.Test} in ConfigManager" << {
+    "If I reflect it into ${Servers.Test} in ConfigManager" << {
       field: String => success = ConfigManager.set(field, value)
     }
     "Then reflection should succeed" << {
