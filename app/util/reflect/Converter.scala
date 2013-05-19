@@ -1,27 +1,31 @@
 package util.reflect
 
-import scala.reflect.ClassTag
+import scala.reflect.runtime.{universe => ru}
+import scala.util.Try
 
 trait Converter[T] {
 
-  val wrappers: Map[Class[_], Function[T, Any]]
+  lazy val typeMirror = ru.runtimeMirror(getClass.getClassLoader)
 
-  def catchy[T](v: => T) =
-    try Some(v) catch {
-      case ex: Throwable => None
+  val wrappers: Map[ru.Type, Function[T, Any]]
+
+  def defaultWrap(v: T, wType: ru.Type)(implicit tag: ru.TypeTag[T]): Any = {
+    val wClassMirror = typeMirror.reflectClass(wType.typeSymbol.asClass)
+
+    wType.declaration(ru.nme.CONSTRUCTOR).asMethod.alternatives.collectFirst {
+      case m: ru.MethodSymbol if m.paramss.exists(p => p.length == 1 && ru.typeOf[T] <:< p.head.typeSignature) => m
+    }.map {
+      ctor => wClassMirror.reflectConstructor(ctor).apply(v)
+    }.getOrElse {
+      throw new NoSuchMethodException
     }
-
-  def defaultWrap(v: T, clazz: Class[_])(implicit tag: ClassTag[T]): Any = {
-    clazz.getConstructor(tag.runtimeClass).newInstance(v.asInstanceOf[AnyRef])
   }
 
-  def wrap(v: T, clazz: Class[_])(implicit tag: ClassTag[T]): Option[AnyRef] = {
-    wrappers.get(clazz).flatMap {
-      w => catchy { w(v) }
-    }.orElse {
-      catchy { defaultWrap(v, clazz) }
-    }.map {
-      r => r.asInstanceOf[AnyRef]
+  def wrap(v: T, wType: ru.Type)(implicit tag: ru.TypeTag[T]): Try[Any] = {
+    wrappers.get(wType).map {
+      w => Try(w(v))
+    }.getOrElse {
+      Try(defaultWrap(v, wType))
     }
   }
 
@@ -29,16 +33,16 @@ trait Converter[T] {
 
 object StringConverter extends Converter[String] {
 
-  val wrappers = Map[Class[_], Function[String, Any]](
-    classOf[Boolean] -> { s => s.toBoolean },
-    classOf[Char] -> { s => s.charAt(0) },
-    classOf[Byte] -> { s => s.toByte },
-    classOf[Short] -> { s => s.toShort },
-    classOf[Int] -> { s => s.toInt },
-    classOf[Long] -> { s => s.toLong },
-    classOf[Float] -> { s => s.toFloat },
-    classOf[Double] -> { s => s.toDouble },
-    classOf[Unit] -> { s => Unit }
+  val wrappers = Map[ru.Type, Function[String, Any]](
+    ru.typeOf[Boolean] -> { s => s.toBoolean },
+    ru.typeOf[Char] -> { s => s.charAt(0) },
+    ru.typeOf[Byte] -> { s => s.toByte },
+    ru.typeOf[Short] -> { s => s.toShort },
+    ru.typeOf[Int] -> { s => s.toInt },
+    ru.typeOf[Long] -> { s => s.toLong },
+    ru.typeOf[Float] -> { s => s.toFloat },
+    ru.typeOf[Double] -> { s => s.toDouble },
+    ru.typeOf[Unit] -> { s => Unit }
   )
 
 }

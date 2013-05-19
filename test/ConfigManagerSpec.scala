@@ -1,7 +1,11 @@
 import org.specs2.mutable.{NameSpace, Specification}
+import scala.util.Try
+import util.TryMatchers
 import util.config.ConfigManager
 
-class ConfigManagerSpec extends Specification {
+class ConfigManagerSpec
+  extends Specification
+  with TryMatchers {
 
   "Reflective ConfigManager" >> new State {
     "Given the following number: ${42}" << {
@@ -11,7 +15,7 @@ class ConfigManagerSpec extends Specification {
       field: String => success = ConfigManager.set(field, value)
     }
     "Then reflect should succeed" << {
-      success must beTrue
+      success must beSuccess[Unit]
     }
     "And I should get it back from ConfigManager.Servers.Test" << {
       ConfigManager.Servers.Test must beEqualTo(value.toInt)
@@ -20,7 +24,7 @@ class ConfigManagerSpec extends Specification {
 
   trait State extends NameSpace {
     var value: String = _
-    var success: Boolean = _
+    var success: Try[Unit] = _
   }
 
 }

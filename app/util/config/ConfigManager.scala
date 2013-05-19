@@ -1,5 +1,7 @@
 package util.config
 
+import util.reflect.Manifestable
+
 object ConfigManager extends Manifestable {
 
   val Servers = new Manifestable {
