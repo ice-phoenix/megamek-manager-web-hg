@@ -3,7 +3,7 @@ package global
 import info.icephoenix.mmm.MegamekManager
 import info.icephoenix.mmm.data._
 import play.api._
-import util.ConfigManager
+import util.config.ConfigManager
 
 object Global extends GlobalSettings {
 
@@ -12,7 +12,7 @@ object Global extends GlobalSettings {
   override def onStart(app: Application) {
     mmm = MegamekManager.create()
 
-    ConfigManager.ServerPorts.foreach {
+    ConfigManager.Servers.Ports.foreach {
       port => mmm.RunnerSup ! StartServer(port, "")
     }
   }
