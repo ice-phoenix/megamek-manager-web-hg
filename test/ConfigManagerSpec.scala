@@ -14,7 +14,7 @@ class ConfigManagerSpec
     "After I reflect it into ${Servers.Test} in ConfigManager" << {
       field: String => success = ConfigManager.set(field, value)
     }
-    "Then reflect should succeed" << {
+    "Then reflection should succeed" << {
       success must beSuccess[Unit]
     }
     "And I should get it back from ConfigManager.Servers.Test" << {
