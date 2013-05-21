@@ -2,11 +2,17 @@ package util.config
 
 import util.reflect.Manifestable
 
-object ConfigManager extends Manifestable {
+class ConfigManager extends Manifestable {
 
   val Servers = new Manifestable {
-    var Ports = 2345 to 2350 toList
-    var Test = 2345
+    var PortsFrom = 2345
+    var PortsTo = 2350
+
+    def Ports = PortsFrom.to(PortsTo)
   }
 
+}
+
+object ConfigManager {
+  val Instance = new ConfigManager
 }

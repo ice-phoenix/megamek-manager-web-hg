@@ -10,5 +10,7 @@ GET     /mmm/servers                controllers.mmm.Servers.query
 PUT     /mmm/servers/:port          controllers.mmm.Servers.create(port: Int, password: String ?= "")
 DELETE  /mmm/servers/:port          controllers.mmm.Servers.delete(port: Int)
 
+GET     /mmm/admin/config           controllers.mmm.admin.Config.query
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
