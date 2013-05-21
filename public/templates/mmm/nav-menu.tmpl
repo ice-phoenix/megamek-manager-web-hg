@@ -1,6 +1,26 @@
-<div class="row-fluid">
-  <ul class="nav nav-list">
-    <li class=""><a href="/#/servers">View servers</a></li>
-    <li class=""><a href="/#/admin">Admin panel</a></li>
+<div class="row-fluid" ng-init="
+    adminConfigIsCollapsed=true
+">
+  <ul class="nav nav-pills nav-stacked">
+
+    <li class="">
+      <a href="/#/servers">View servers</a>
+    </li>
+
+    <li class="">
+      <a href="/#/admin">
+        Admin panel<i class="icon-chevron-down pull-right"
+                      ng-click="adminConfigIsCollapsed=!adminConfigIsCollapsed"></i>
+      </a>
+
+      <div collapse="adminConfigIsCollapsed">
+        <ul class="nav nav-list">
+          <li class=""><a href="/#/admin/config">
+            <small>Edit config</small>
+          </a></li>
+        </ul>
+      </div>
+
+    </li>
   </ul>
 </div>
