@@ -29,6 +29,7 @@ trait Reflectible {
   lazy val fields =
     instanceMirror.symbol.typeSignature.declarations
     .filter { m => m.isTerm && !m.isMethod && !m.isModule }
+    .filterNot { m => getMemberName(m).contains('$') }
     .filterNot { m => ignoredFields.contains(getMemberName(m)) }
     .map { m => (getMemberName(m), getFieldDesc(m.asTerm)) }
     .toMap
