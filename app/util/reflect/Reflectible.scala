@@ -28,21 +28,33 @@ trait Reflectible {
 
   lazy val fields =
     instanceMirror.symbol.typeSignature.declarations
-      .filter { m => m.isTerm && !m.isMethod && !m.isModule }
-      .map { m => (getMemberName(m), getFieldDesc(m.asTerm)) }
-      .toMap
+    .filter { m => m.isTerm && !m.isMethod && !m.isModule }
+    .filterNot { m => ignoredFields.contains(getMemberName(m)) }
+    .map { m => (getMemberName(m), getFieldDesc(m.asTerm)) }
+    .toMap
 
   lazy val methods =
     instanceMirror.symbol.typeSignature.declarations
-      .filter { m => m.isMethod }
-      .map { m => (getMemberName(m), methodMirror(m.asMethod)) }
-      .toMap
+    .filter { m => m.isMethod }
+    .map { m => (getMemberName(m), methodMirror(m.asMethod)) }
+    .toMap
+
+  lazy val ignoredFields: List[String] = List(
+    "typeMirror",
+    "instanceMirror",
+    "fields",
+    "methods",
+    "ignoredFields",
+    "moreIgnoredFields"
+  ) ::: moreIgnoredFields
+
+  val moreIgnoredFields: List[String]
 
   def setFieldValue(field: String, value: Any): Try[Unit] = {
     methods
-      .get(field + "_$eq")
-      .map { m => Try { m.apply(value); () } }
-      .getOrElse { Failure(new NoSuchElementException) }
+    .get(field + "_$eq")
+    .map { m => Try { m.apply(value); () } }
+    .getOrElse { Failure(new NoSuchElementException) }
   }
 
 }

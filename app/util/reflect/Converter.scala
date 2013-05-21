@@ -35,7 +35,7 @@ trait Converter[T] {
 
 object StringConverter extends Converter[String] {
 
-  val wrappers = Map[ru.Type, Function[String, Any]](
+  lazy val wrappers = Map[ru.Type, Function[String, Any]](
     ru.typeOf[Boolean] -> { s => s.toBoolean },
     ru.typeOf[Char] -> { s => s.charAt(0) },
     ru.typeOf[Byte] -> { s => s.toByte },

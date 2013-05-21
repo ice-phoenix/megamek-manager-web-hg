@@ -7,24 +7,39 @@ class ConfigManagerSpec
   extends Specification
   with TryMatchers {
 
+  val number = "42"
+  val field = "Servers.Test"
+
   "Reflective ConfigManager should" >> new State {
-    "Given the following number: ${42}" << {
-      v: String => value = v
+    s"Given the following number: $number" << {
+      //
     }
-    "If I reflect it into ${Servers.Test} in ConfigManager" << {
-      field: String => success = ConfigManager.set(field, value)
+    s"If I reflect it into $field in ConfigManager" << {
+      success = ConfigManager.set(field, number)
     }
     "Then reflection should succeed" << {
       success must beSuccess[Unit]
     }
     "And I should get it back from ConfigManager.Servers.Test" << {
-      ConfigManager.Servers.Test must beEqualTo(value.toInt)
+      ConfigManager.Servers.Test must beEqualTo(number.toInt)
+    }
+  }
+
+  "Reflective ConfigManager also should" >> new State {
+    "If I convert it via asMap() method" << {
+      asMap = ConfigManager.asMap()
+    }
+    "Then asMap() should return a non-empty map" << {
+      asMap must not beEmpty
+    }
+    s"And it should contain $number in $field" << {
+      asMap(field) must beEqualTo(number.toInt)
     }
   }
 
   trait State extends NameSpace {
-    var value: String = _
     var success: Try[Unit] = _
+    var asMap: Map[String, Any] = _
   }
 
 }

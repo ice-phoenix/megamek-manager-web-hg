@@ -11,27 +11,55 @@ trait Manifestable
 
   lazy val nested =
     this
-      .fields
-      .filter { case (_, f) => f.fieldType <:< ru.typeOf[Manifestable] }
-      .map { case (n, f) => (n, f.field.get.asInstanceOf[Manifestable]) }
-      .toMap
+    .fields
+    .filter { case (_, f) => f.fieldType <:< ru.typeOf[Manifestable] }
+    .map { case (n, f) => (n, f.field.get.asInstanceOf[Manifestable]) }
+    .toMap
+
+  lazy val moreIgnoredFields: List[String] = List(
+    "nested"
+  )
+
+  def asMap(): Map[String, Any] = {
+    this
+    .fields
+    .flatMap {
+
+      case (fn, f) if f.fieldType <:< ru.typeOf[Manifestable] => {
+        Try(f.field.get)
+        .map {
+          v => v.asInstanceOf[Manifestable].asMap().map {
+            case (name, value) => (s"$fn.$name" -> value)
+          }
+        }.getOrElse { Map.empty[String, Any] }
+      }
+
+      case (fn, f) => {
+        Try(f.field.get)
+        .map {
+          v => Map(fn -> v)
+        }.getOrElse { Map.empty[String, Any] }
+      }
+
+    }
+  }
 
   def set(path: String, value: String): Try[Unit] = {
     path.split("\\.", 2) match {
       case Array(field) => {
         this
-          .fields
-          .get(field)
-          .map { f => wrap(value, f.fieldType) }
-          .getOrElse { Failure(new NoSuchElementException) }
-          .flatMap { wv => this.setFieldValue(field, wv) }
+        .fields
+        .get(field)
+        .map { f => wrap(value, f.fieldType) }
+        .getOrElse { Failure(new NoSuchElementException) }
+        .flatMap { wv => this.setFieldValue(field, wv) }
       }
       case Array(field, rest) => {
         this
-          .nested
-          .get(field)
-          .map { m => m.set(rest, value) }
-          .getOrElse { Failure(new NoSuchElementException) }
+        .nested
+        .get(field)
+        .map { m => m.set(rest, value) }
+        .getOrElse { Failure(new NoSuchElementException) }
       }
     }
   }
