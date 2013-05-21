@@ -30,6 +30,11 @@ object MmmJsonifier {
 
   import BetterJson.Implicits._
 
+  val TypedAnyWrites: Writes[Any] =
+    ((__ \ 'value).write[String] ~ (__ \ 'type).write[String]) {
+      a: Any => (a.toString, a.getClass.getSimpleName)
+    }
+
   implicit val ServerOnlineWrites = Json.writes[ServerOnline].mkTypeTagged()
   implicit val ServerTimedOutWrites = Json.writes[ServerTimedOut].mkTypeTagged()
   implicit val ServerFailedWrites = Json.writes[ServerFailed].mkTypeTagged()
