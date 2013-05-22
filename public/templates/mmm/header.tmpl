@@ -3,8 +3,15 @@
     <div class="navbar-inner">
 
       <a class="pull-left" href="/#/"><img class="img-32x32" src="/assets/img/cbs.png"></a>
-      <ul class="nav nav-pills">
-        <li class="divider-vertical"></li>
+
+      <ul class="breadcrumb breadcrumb-compact" ng-controller="BreadcrumbsNavCtrl">
+        <li ng-class="getBreadcrumbCls(b)" ng-repeat="b in breadcrumbs.getAll()">
+          <span class="divider">/</span>
+          <span ng-switch="$last">
+            <a href="{{b.path}}" ng-switch-when="false">{{b.name}}</a>
+            <span ng-switch-when="true">{{b.name}}</span>
+          </span>
+        </li>
       </ul>
 
     </div>
