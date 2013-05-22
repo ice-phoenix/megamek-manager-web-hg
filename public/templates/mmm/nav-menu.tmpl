@@ -7,10 +7,9 @@
       <a href="/#/servers">View servers</a>
     </li>
 
-    <li class="">
+    <li class="" ng-mouseenter="adminConfigIsCollapsed=false" ng-mouseout="adminConfigIsCollapsed=true">
       <a href="/#/admin">
-        Admin panel<i class="icon-plus-sign pull-right"
-                      ng-click="adminConfigIsCollapsed=!adminConfigIsCollapsed"></i>
+        Admin panel<i class="icon-chevron-down pull-right"></i>
       </a>
 
       <div collapse="adminConfigIsCollapsed">
