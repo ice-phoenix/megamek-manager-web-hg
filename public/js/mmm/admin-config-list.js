@@ -35,6 +35,18 @@ angular.module('mmm.adminconfiglist', ['ui.bootstrap',
   };
 
   /////////////////////////////////////////////////////////////////////////////
+  // Editing
+  /////////////////////////////////////////////////////////////////////////////
+
+  $scope.getConfigValue = function(key) {
+    return $scope.config[key].value;
+  };
+
+  $scope.setConfigValue = function(key, value) {
+    $scope.config[key].value = value;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // Filtering
   /////////////////////////////////////////////////////////////////////////////
 
@@ -47,4 +59,34 @@ angular.module('mmm.adminconfiglist', ['ui.bootstrap',
   /////////////////////////////////////////////////////////////////////////////
 
   $scope.getConfig();
+}])
+
+.directive('editOnClick', ['$timeout', function($timeout) {
+  return {
+    restrict: 'E',
+    replace: true,
+    transclude: false,
+    scope: {
+      get: '&',
+      set: '&'
+    },
+    template: '<div>' +
+                '<span ng-switch="isEditMode">' +
+                  '<input type="text" class="input-compact" ng-switch-when="false" ng-model="editValue" readonly ng-click="enterEditMode()"></input>' +
+                  '<input type="text" class="input-compact" ng-switch-when="true"  ng-model="editValue"                                    ></input>' +
+                '</span>' +
+              '</div>',
+    link: function(scope, element, attrs) {
+
+      scope.isEditMode = false;
+      scope.editValue = scope.get();
+
+      scope.dom = element;
+
+      scope.enterEditMode = function() {
+        scope.isEditMode = true;
+        $timeout(function() { scope.dom.find('input').focus(); }, 0);
+      };
+    }
+  }; // return
 }]);
