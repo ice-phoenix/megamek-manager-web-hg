@@ -19,7 +19,7 @@ angular.module('util.modals', ['ui.bootstrap'])
 
   modals.confirm = function(title, msg, warn, buttons) {
     return $dialog.dialog({
-        templateUrl: '/assets/templates/mmm/modal-message-box.tmpl',
+        templateUrl: '/assets/templates/mmm/util/modal-message-box.tmpl',
         controller: 'ModalMessageBoxCtrl',
         resolve: {
           model: function() {
