@@ -19,7 +19,7 @@
         {{key}}
       </td>
       <td style="width: 40%">
-        <edit-on-click get="getConfigValue(key)" set="setConfigValue(key, value)"></edit-on-click>
+        <edit-on-click value="config[key].value"></edit-on-click>
       </td>
       <td style="width: 20%">
         {{config[key].type}}
