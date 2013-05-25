@@ -111,7 +111,7 @@ angular.module('mmm.adminconfiglist', ['ui.bootstrap',
       scope.model = {};
 
       scope.$valueGetter = $parse(attrs.value);
-      scope.$valueSetter = scope.$valueGetter.assign;
+      scope.$valueSetter = scope.$valueGetter.assign || angular.noop;
 
       scope.getValue = function() {
         var value = scope.$valueGetter(scope);
