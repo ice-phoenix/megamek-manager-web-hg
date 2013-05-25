@@ -26,7 +26,7 @@ trait Manifestable
     .flatMap {
 
       case (fn, f) if f.fieldType <:< ru.typeOf[Manifestable] => {
-        Try(f.field.get)
+        Try { f.field.get }
         .map {
           v => v.asInstanceOf[Manifestable].asMap().map {
             case (name, value) => (s"$fn.$name" -> value)
@@ -35,12 +35,31 @@ trait Manifestable
       }
 
       case (fn, f) => {
-        Try(f.field.get)
+        Try { f.field.get }
         .map {
           v => Map(fn -> v)
         }.getOrElse { Map.empty[String, Any] }
       }
 
+    }
+  }
+
+  def get(path: String): Try[Any] = {
+    path.split("\\.", 2) match {
+      case Array(field) => {
+        this.getFieldValue(field)
+      }
+      case Array(field, rest) => {
+        this
+        .nested
+        .get(field)
+        .map { m => m.get(rest) }
+        .getOrElse {
+          Failure(new NoSuchFieldError(
+            s"Field '$field' not found"
+          ))
+        }
+      }
     }
   }
 
@@ -51,15 +70,22 @@ trait Manifestable
         .fields
         .get(field)
         .map { f => wrap(value, f.fieldType) }
-        .getOrElse { Failure(new NoSuchElementException) }
-        .flatMap { wv => this.setFieldValue(field, wv) }
+        .getOrElse {
+          Failure(new NoSuchFieldException(
+            s"Field '$field' not found"
+          ))
+        }.flatMap { wv => this.setFieldValue(field, wv) }
       }
       case Array(field, rest) => {
         this
         .nested
         .get(field)
         .map { m => m.set(rest, value) }
-        .getOrElse { Failure(new NoSuchElementException) }
+        .getOrElse {
+          Failure(new NoSuchFieldException(
+            s"Field '$field' not found"
+          ))
+        }
       }
     }
   }

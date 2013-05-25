@@ -51,11 +51,43 @@ trait Reflectible {
 
   val moreIgnoredFields: List[String]
 
+  def getFieldValue(field: String): Try[Any] = {
+    fields
+    .get(field)
+    .map {
+      f =>
+        Try {
+          f.field.get
+        }.orElse {
+          Failure(new IllegalAccessException(
+            s"Could not get field '$field'"
+          ))
+        }
+    }.getOrElse {
+      Failure(new NoSuchFieldException(
+        s"Field '$field' not found"
+      ))
+    }
+  }
+
   def setFieldValue(field: String, value: Any): Try[Unit] = {
     methods
     .get(field + "_$eq")
-    .map { m => Try { m.apply(value); () } }
-    .getOrElse { Failure(new NoSuchElementException) }
+    .map {
+      m =>
+        Try {
+          m.apply(value);
+          ()
+        }.orElse {
+          Failure(new IllegalAccessException(
+            s"Could not set field '$field' to: $value"
+          ))
+        }
+    }.getOrElse {
+      Failure(new NoSuchFieldException(
+        s"Field '$field' not found"
+      ))
+    }
   }
 
 }
