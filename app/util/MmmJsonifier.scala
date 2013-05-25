@@ -35,6 +35,14 @@ object MmmJsonifier {
       a: Any => (a.toString, a.getClass.getSimpleName)
     }
 
+  implicit val TypedThrowableWrites = new Writes[Throwable] {
+    def writes(ex: Throwable) = {
+      val exType = ex.getClass.getSimpleName
+      val exMsg = ex.getMessage
+      Json.toJson(s"$exType: $exMsg")
+    }
+  }
+
   implicit val ServerOnlineWrites = Json.writes[ServerOnline].mkTypeTagged()
   implicit val ServerTimedOutWrites = Json.writes[ServerTimedOut].mkTypeTagged()
   implicit val ServerFailedWrites = Json.writes[ServerFailed].mkTypeTagged()
