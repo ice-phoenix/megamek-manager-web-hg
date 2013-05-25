@@ -26,7 +26,7 @@ object Servers
       )
     case e: Exception =>
       InternalServerError(
-        JsonRestFailure("Oops: %s".format(e.getMessage))
+        JsonRestFailure(e)
       )
   }
 
