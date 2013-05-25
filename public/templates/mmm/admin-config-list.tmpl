@@ -14,7 +14,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="key in config.keys | filter:searchId">
+    <tr ng-repeat="key in config.$keys | filter:searchId">
       <td style="width: 40%">
         {{key}}
       </td>
@@ -27,5 +27,9 @@
     </tr>
     </tbody>
   </table>
+
+  <div class="pull-right">
+    <a class="btn" type="button" ng-click="saveConfig()">Save config</a>
+  </div>
 
 </div>

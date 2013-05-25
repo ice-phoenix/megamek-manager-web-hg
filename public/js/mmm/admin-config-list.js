@@ -34,6 +34,22 @@ angular.module('mmm.adminconfiglist', ['ui.bootstrap',
     );
   };
 
+  $scope.saveConfig = function() {
+    AdminConfig.put(
+      AdminConfig.untransform($scope.config),
+      function(json) {
+        var newConfig = AdminConfig.transform(json);
+        AdminConfig.merge($scope.config, newConfig);
+      },
+      function(error) {
+        var changed = error.data.changed || {};
+        var newConfig = AdminConfig.transform(changed);
+        AdminConfig.merge($scope.config, newConfig);
+        defaultErrorHandler(error);
+      }
+    );
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // Editing
   /////////////////////////////////////////////////////////////////////////////
