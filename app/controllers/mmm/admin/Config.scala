@@ -10,7 +10,7 @@ object Config
 
   import util.config.ConfigManager.{Instance => CMI}
 
-  def query = Action {
+  def get = Action {
     Ok(
       JsonRestSuccess(Json.obj(
         CMI.asMap().map { case (name, value) => (name, Json.toJsFieldJsValueWrapper(value)(TypedAnyWrites)) }.toSeq: _*
