@@ -19,15 +19,19 @@ trait Converter[T] {
     }.map {
       ctor => wClassMirror.reflectConstructor(ctor).apply(v)
     }.getOrElse {
-      throw new NoSuchMethodException
+      val vTypeName = ru.typeOf[T].typeSymbol.name.toString.trim
+      val wTypeName = wType.typeSymbol.name.toString.trim
+      throw new NoSuchMethodException(
+        s"Cannot wrap '$v' as '$vTypeName' -> '$wTypeName'"
+      )
     }
   }
 
   def wrap(v: T, wType: ru.Type)(implicit tag: ru.TypeTag[T]): Try[Any] = {
     wrappers.get(wType).map {
-      w => Try(w(v))
+      w => Try { w(v) }
     }.getOrElse {
-      Try(defaultWrap(v, wType))
+      Try { defaultWrap(v, wType) }
     }
   }
 
