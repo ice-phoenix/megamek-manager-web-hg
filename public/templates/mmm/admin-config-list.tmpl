@@ -19,7 +19,7 @@
         {{key}}
       </td>
       <td style="width: 40%">
-        <edit-on-click value="config[key].value"></edit-on-click>
+        <edit-on-click value="config[key].value" on-edit-on="onEditOn()" on-edit-off="onEditOff()"></edit-on-click>
       </td>
       <td style="width: 20%">
         {{config[key].type}}
@@ -29,7 +29,7 @@
   </table>
 
   <div class="pull-right">
-    <a class="btn" type="button" ng-click="saveConfig()">Save config</a>
+    <a class="btn" type="button" ng-disabled="isSaveConfigDisabled()" ng-click="saveConfig()">Save config</a>
   </div>
 
 </div>

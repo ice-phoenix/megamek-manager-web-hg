@@ -54,12 +54,16 @@ angular.module('mmm.adminconfiglist', ['ui.bootstrap',
   // Editing
   /////////////////////////////////////////////////////////////////////////////
 
-  $scope.getConfigValue = function(key) {
-    return $scope.config[key].value;
+  $scope.onEditOn = function() {
+    $scope.activeEdits = $scope.activeEdits + 1;
   };
 
-  $scope.setConfigValue = function(key, value) {
-    $scope.config[key].value = value;
+  $scope.onEditOff = function() {
+    $scope.activeEdits = $scope.activeEdits - 1;
+  };
+
+  $scope.isSaveConfigDisabled = function() {
+    return $scope.activeEdits > 0;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -74,6 +78,7 @@ angular.module('mmm.adminconfiglist', ['ui.bootstrap',
   // Init
   /////////////////////////////////////////////////////////////////////////////
 
+  $scope.activeEdits = 0;
   $scope.getConfig();
 }])
 
@@ -110,46 +115,66 @@ angular.module('mmm.adminconfiglist', ['ui.bootstrap',
 
       scope.model = {};
 
-      scope.$valueGetter = $parse(attrs.value);
-      scope.$valueSetter = scope.$valueGetter.assign || angular.noop;
+      // Callbacks to our user
+      var $valueGetter = $parse(attrs.value);
+      var $valueSetter = $valueGetter.assign || angular.noop;
 
-      scope.getValue = function() {
-        var value = scope.$valueGetter(scope);
+      var onEditOnCallback = $parse(attrs.onEditOn);
+      var $onEditOn = function() {
+        onEditOnCallback(scope);
+      };
+      var onEditOffCallback = $parse(attrs.onEditOff);
+      var $onEditOff = function() {
+        onEditOffCallback(scope);
+      };
+
+      // Helper functions
+      var getValue = function() {
+        var value = $valueGetter(scope);
         scope.model.undo = value;
         scope.model.editValue = value;
       };
-
-      scope.setValue = function() {
+      var setValue = function() {
         var newValue = scope.model.editValue;
         scope.model.undo = newValue;
-        scope.$valueSetter(scope, newValue);
+        $valueSetter(scope, newValue);
       };
-
-      scope.revertValue = function() {
+      var revertValue = function() {
         scope.model.editValue = scope.model.undo;
       };
 
-      scope.model.isEditMode = false;
-      scope.getValue();
-
-      scope.enterEditMode = function(event) {
+      var editOn = function() {
         scope.model.isEditMode = true;
-        scope.getValue();
+        $onEditOn();
+      };
+      var editOff = function() {
+        scope.model.isEditMode = false;
+        $onEditOff();
+      };
+
+      // Controller functions
+      scope.enterEditMode = function(event) {
+        editOn();
+        getValue();
         $timeout(function() { element.find('input').focus(); }, 0);
       };
 
       scope.exitEditMode = function(event) {
         switch (event.which) {
           case 13:
-            scope.model.isEditMode = false;
-            scope.setValue();
+            editOff();
+            setValue();
             break;
           case 27:
-            scope.model.isEditMode = false;
-            scope.revertValue();
+            editOff();
+            revertValue();
             break;
         }
       };
+
+      // Init
+      scope.model.isEditMode = false;
+      getValue();
     }
   }; // return
 }]);
