@@ -20,6 +20,10 @@ trait Manifestable
     "nested"
   )
 
+  def fromMap(m: Map[String, String]) = {
+    m.map { case (fn, f) => this.set(fn, f) }
+  }
+
   def asMap(): Map[String, Any] = {
     this
     .fields
