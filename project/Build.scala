@@ -13,6 +13,8 @@ object ApplicationBuild extends Build {
 
   val appDependencies = Seq(
     // Add your project dependencies here,
+    jdbc,
+    anorm,
     "info.ice-phoenix" % "megamek-manager" % "0.1-SNAPSHOT" exclude("org.slf4j", "slf4j-log4j12")
   )
 
