@@ -13,12 +13,16 @@ object Global extends GlobalSettings {
   override def onStart(app: Application) {
     mmm = MegamekManager.create()
 
+    CMI.load()
+
     CMI.Servers.Ports.foreach {
       port => mmm.RunnerSup ! StartServer(port, "")
     }
   }
 
   override def onStop(app: Application) {
+    CMI.save()
+
     mmm.shutdown()
   }
 

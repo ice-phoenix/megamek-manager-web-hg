@@ -11,6 +11,10 @@ class ConfigManager extends Manifestable {
     def Ports = PortsFrom.to(PortsTo)
   }
 
+  def save() = db.Config.save(this)
+
+  def load() = db.Config.load(this)
+
 }
 
 object ConfigManager {
