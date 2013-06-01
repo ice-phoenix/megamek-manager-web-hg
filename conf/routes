@@ -21,9 +21,24 @@ PUT     /mmm/admin/config           controllers.mmm.admin.Config.set
 ########################################################################################################################
 # SecureSocial stuff
 
-GET     /login                      securesocial.controllers.LoginPage.login
-GET     /logout                     securesocial.controllers.LoginPage.logout
+GET     /login                      controllers.customsecuresocial.Forwarder.login
+POST    /logout                     controllers.customsecuresocial.Forwarder.logout
+GET     /signup                     controllers.customsecuresocial.Forwarder.startSignUp
+POST    /signup                     controllers.customsecuresocial.Forwarder.handleStartSignUp
+GET     /signup/:token              controllers.customsecuresocial.Forwarder.signUp(token)
+POST    /signup/:token              controllers.customsecuresocial.Forwarder.handleSignUp(token)
+GET     /reset                      controllers.customsecuresocial.Forwarder.startResetPassword
+POST    /reset                      controllers.customsecuresocial.Forwarder.handleStartResetPassword
+GET     /reset/:token               controllers.customsecuresocial.Forwarder.resetPassword(token)
+POST    /reset/:token               controllers.customsecuresocial.Forwarder.handleResetPassword(token)
+GET     /password                   controllers.customsecuresocial.Forwarder.passwordChange
+POST    /password                   controllers.customsecuresocial.Forwarder.handlePasswordChange
 
+########################################################################################################################
+# Needed for reverse routing
+
+GET     /login                      securesocial.controllers.LoginPage.login
+POST    /logout                     securesocial.controllers.LoginPage.logout
 GET     /signup                     securesocial.controllers.Registration.startSignUp
 POST    /signup                     securesocial.controllers.Registration.handleStartSignUp
 GET     /signup/:token              securesocial.controllers.Registration.signUp(token)

@@ -11,27 +11,36 @@ angular.module('mmm', ['ui.bootstrap',
     .when('/',
           { templateUrl: '/assets/templates/mmm/welcome.tmpl' });
 
+  var nakedUrl = function(url) {
+    return url + '?naked';
+  };
+
   var forwardUrl = function(url) {
-    $routeProvider.when(url, { templateUrl: url });
+    $routeProvider.when(
+      url,
+      {
+        templateUrl: nakedUrl( url )
+      }
+    );
   };
 
   forwardUrl('/login');
-  forwardUrl('/logout');
   forwardUrl('/signup');
   forwardUrl('/reset');
   forwardUrl('/password');
 
   var forwardUrlWithToken = function(url) {
     $routeProvider.when(
-      url + "/:token",
+      url + '/:token',
       {
         controller: function($scope, $routeParams) {
-          $scope.forwardedTemplateUrl = url + "/" + $routeParams['token'];
+          $scope.forwardedTemplateUrl =
+            nakedUrl( url + '/' + $routeParams['token'] );
         },
         template: '<div ng-include src="forwardedTemplateUrl"></div>'
       }
     );
-  }
+  };
 
   forwardUrlWithToken('/signup');
   forwardUrlWithToken('/reset');
