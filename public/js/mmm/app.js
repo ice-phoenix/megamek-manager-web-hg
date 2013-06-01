@@ -21,6 +21,21 @@ angular.module('mmm', ['ui.bootstrap',
   forwardUrl('/reset');
   forwardUrl('/password');
 
+  var forwardUrlWithToken = function(url) {
+    $routeProvider.when(
+      url + "/:token",
+      {
+        controller: function($scope, $routeParams) {
+          $scope.forwardedTemplateUrl = url + "/" + $routeParams['token'];
+        },
+        template: '<div ng-include src="forwardedTemplateUrl"></div>'
+      }
+    );
+  }
+
+  forwardUrlWithToken('/signup');
+  forwardUrlWithToken('/reset');
+
   $dialogProvider.options({});
 
 }]);
