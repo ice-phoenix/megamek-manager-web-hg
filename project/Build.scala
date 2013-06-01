@@ -15,12 +15,16 @@ object ApplicationBuild extends Build {
     // Add your project dependencies here,
     jdbc,
     anorm,
-    "info.ice-phoenix" % "megamek-manager" % "0.1-SNAPSHOT" exclude("org.slf4j", "slf4j-log4j12")
+    "info.ice-phoenix" % "megamek-manager" % "0.1-SNAPSHOT" exclude("org.slf4j", "slf4j-log4j12"),
+    "securesocial" % "securesocial_2.10" % "master-SNAPSHOT"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
     // Add your own project settings here
-    resolvers += "Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository"
+    resolvers ++= Seq(
+      "Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository",
+      "SBT Plugin Snapshots" at "http://repo.scala-sbt.org/scalasbt/sbt-plugin-snapshots/"
+    )
   )
 
 }
