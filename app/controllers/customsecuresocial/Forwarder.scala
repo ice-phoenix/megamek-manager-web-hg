@@ -7,10 +7,10 @@ object Forwarder
 
   def forward[A](url: String, fwd: Action[A])
                 (implicit request: Request[A]): Result = {
-    if (request.method != "GET" || request.getQueryString("naked").nonEmpty) {
-      fwd(request)
+    if (request.method == "GET" && request.getQueryString("naked").isEmpty) {
+      Redirect("/#" + url, request.queryString)
     } else {
-      Redirect("/#" + url, request.queryString - "naked")
+      fwd(request)
     }
   }
 

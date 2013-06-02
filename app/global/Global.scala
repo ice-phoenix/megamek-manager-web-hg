@@ -3,8 +3,11 @@ package global
 import info.icephoenix.mmm.MegamekManager
 import info.icephoenix.mmm.data._
 import play.api._
+import play.api.mvc.WithFilters
+import util.customsecuresocial.NakingFilter
 
-object Global extends GlobalSettings {
+object Global
+  extends WithFilters(NakingFilter) {
 
   import util.config.ConfigManager.{Instance => CMI}
 
