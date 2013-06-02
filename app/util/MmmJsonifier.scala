@@ -6,6 +6,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import scala.reflect.runtime.{universe => ru}
+import securesocial.core.Identity
 
 object MmmJsonifier {
 
@@ -64,5 +65,13 @@ object MmmJsonifier {
       Json.toJson(v.status.map(s => Json.toJson(s)))
     }
   }
+
+  implicit val IdentityWrites: Writes[Identity] =
+    ((__ \ 'firstName).write[String] ~
+      (__ \ 'lastName).write[String] ~
+      (__ \ 'email).writeNullable[String] ~
+      (__ \ 'avatarUrl).writeNullable[String]) {
+      u: Identity => (u.firstName, u.lastName, u.email, u.avatarUrl)
+    }
 
 }

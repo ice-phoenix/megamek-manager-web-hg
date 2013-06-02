@@ -16,12 +16,6 @@ object JsonRestFailure {
 
   def apply(payload: String): JsValue = apply(Json.obj("msg" -> payload))
 
-  def apply(ex: Throwable): JsValue = {
-    val exType = ex.getClass.getSimpleName
-    val exMsg = ex.getMessage
-    apply(s"$exType: $exMsg")
-  }
-
 }
 
 object BetterStringOps {

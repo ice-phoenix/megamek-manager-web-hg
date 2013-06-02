@@ -18,6 +18,8 @@ DELETE  /mmm/servers/:port          controllers.mmm.Servers.delete(port: Int)
 GET     /mmm/admin/config           controllers.mmm.admin.Config.get
 PUT     /mmm/admin/config           controllers.mmm.admin.Config.set
 
+GET     /auth/users/current         controllers.auth.Users.current
+
 ########################################################################################################################
 # SecureSocial stuff
 

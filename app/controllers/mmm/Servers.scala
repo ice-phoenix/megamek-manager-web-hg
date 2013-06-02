@@ -26,7 +26,7 @@ object Servers
       )
     case e: Exception =>
       InternalServerError(
-        JsonRestFailure(e)
+        JsonRestFailure(Json.toJson(e))
       )
   }
 
