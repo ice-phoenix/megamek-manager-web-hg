@@ -23,9 +23,7 @@ object Config {
     DB.withConnection("mmmdb") {
       implicit c =>
         val configMap =
-          SQL( """
-             SELECT c.fName, c.fValue FROM Config c
-               """)
+          SQL("SELECT c.fName, c.fValue FROM Config c")
           .as {
             (str("fName") ~ str("fValue")).map { case n ~ v => (n -> v) } *
           }.toMap
