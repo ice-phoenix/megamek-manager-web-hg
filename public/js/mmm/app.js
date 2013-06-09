@@ -3,6 +3,7 @@ angular.module('mmm', ['ui.bootstrap',
                        'mmm.adminpanel',
                        'mmm.serverlist',
                        'mmm.welcome',
+                       'util.auth',
                        'util.breadcrumbs',
                        'util.notifications'])
 
@@ -13,12 +14,14 @@ function( $dialogProvider ) {
 
 }])
 
-.run([   '$rootScope', 'notifications',
-function( $rootScope,   notifications ) {
+.run([   '$rootScope', 'auth', 'notifications',
+function( $rootScope,   auth,   notifications ) {
 
   $rootScope.$restDefaultErrorHandler = function(error) {
     var msg = error.data.msg || 'Unknown error';
     notifications.addCurrent({type: 'error', msg: msg});
   };
+
+  auth.update();
 
 }]);
