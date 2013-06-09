@@ -1,6 +1,20 @@
 angular.module('util.auth', ['mmm.rest.users',
                              'util.notifications'])
 
+.controller('AuthNavCtrl', ['$scope', 'auth', function($scope, auth) {
+  $scope.logout = function() {
+    auth.logout();
+  };
+
+  $scope.isLoggedIn = function() {
+    return auth.isLoggedIn();
+  };
+
+  $scope.username = function() {
+    return auth.username();
+  };
+}])
+
 .factory('auth', ['$rootScope', '$location', '$http', 'notifications', 'Users',
          function( $rootScope,   $location,   $http,   notifications,   Users ) {
 
@@ -33,6 +47,18 @@ angular.module('util.auth', ['mmm.rest.users',
       $rootScope.$restDefaultErrorHandler
     );
   };
+
+  authService.isLoggedIn = function() {
+    return !!currentUser;
+  };
+
+  authService.username = function() {
+    if (authService.isLoggedIn) {
+      return currentUser.firstName + " " + currentUser.lastName;
+    } else {
+      return null;
+    }
+  }
 
   return authService;
 }]);

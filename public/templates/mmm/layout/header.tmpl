@@ -4,7 +4,7 @@
 
       <a class="pull-left" href="/#/"><img class="img-32x32" src="/assets/img/cbs.png"></a>
 
-      <ul class="breadcrumb breadcrumb-compact" ng-controller="BreadcrumbsNavCtrl">
+      <ul class="breadcrumb breadcrumb-compact span8" ng-controller="BreadcrumbsNavCtrl">
         <li ng-class="getBreadcrumbCls(b)" ng-repeat="b in breadcrumbs.getAll()">
           <span class="divider">/</span>
           <span ng-switch="$last">
@@ -13,6 +13,17 @@
           </span>
         </li>
       </ul>
+
+      <span class="pull-right" ng-controller="AuthNavCtrl" ng-switch="isLoggedIn()">
+        <ul class="nav" ng-switch-when="false">
+          <li><a href="/signup" target="_self">Sign up</a></li>
+          <li><a href="/login" target="_self">Log in</a></li>
+        </ul>
+        <ul class="nav" ng-switch-when="true">
+          <li><a>{{username()}}</a></li>
+          <li><a href="#" ng-click="logout()">Log out</a></li>
+        </ul>
+      </span>
 
     </div>
   </div>
