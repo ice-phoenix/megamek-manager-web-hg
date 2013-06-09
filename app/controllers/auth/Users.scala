@@ -1,6 +1,6 @@
 package controllers.auth
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsNull, Json}
 import play.api.mvc._
 import securesocial.core.SecureSocial
 import util.JsonRestSuccess
@@ -18,7 +18,7 @@ object Users
           Ok(JsonRestSuccess(Json.toJson(user)))
         }
         case None => {
-          Ok(JsonRestSuccess(Json.obj()))
+          Ok(JsonRestSuccess(JsNull))
         }
       }
   }
