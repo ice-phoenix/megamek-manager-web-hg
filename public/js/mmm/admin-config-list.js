@@ -15,11 +15,6 @@ angular.module('mmm.adminconfiglist', ['ui.bootstrap',
 .controller('AdminConfigListCtrl', ['$scope', 'AdminConfig', 'notifications', 'modals', 'collections',
                            function( $scope,   AdminConfig,   notifications,   modals,   collections ) {
 
-  var defaultErrorHandler = function(error) {
-    var msg = error.data.msg || 'Unknown error';
-    notifications.addCurrent({type: 'error', msg: msg});
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // JSON REST API
   /////////////////////////////////////////////////////////////////////////////
@@ -30,7 +25,7 @@ angular.module('mmm.adminconfiglist', ['ui.bootstrap',
       function(json) {
         $scope.config = AdminConfig.transform(json);
       },
-      defaultErrorHandler
+      $scope.$restDefaultErrorHandler
     );
   };
 
@@ -45,7 +40,7 @@ angular.module('mmm.adminconfiglist', ['ui.bootstrap',
         var changed = error.data.changed || {};
         var newConfig = AdminConfig.transform(changed);
         AdminConfig.merge($scope.config, newConfig);
-        defaultErrorHandler(error);
+        $scope.$restDefaultErrorHandler(error);
       }
     );
   }

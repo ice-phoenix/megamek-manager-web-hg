@@ -13,10 +13,5 @@ angular.module('mmm.adminpanel', ['ui.bootstrap',
 
 .controller('AdminPanelCtrl', ['$scope', 'notifications', 'modals', 'collections',
                       function( $scope,   notifications,   modals,   collections ) {
-
-  var defaultErrorHandler = function(error) {
-    var msg = error.data.msg || 'Unknown error';
-    notifications.addCurrent({type: 'error', msg: msg});
-  };
-
+  // EMPTY
 }]);

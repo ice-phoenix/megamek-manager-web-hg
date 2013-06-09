@@ -17,11 +17,6 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
 
   $scope.servers = collections.lut(function(e) { return e.port; });
 
-  var defaultErrorHandler = function(error) {
-    var msg = error.data.msg || 'Unknown error';
-    notifications.addCurrent({type: 'error', msg: msg});
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // JSON REST API
   /////////////////////////////////////////////////////////////////////////////
@@ -35,7 +30,7 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
           $scope.servers.add(e);
         });
       },
-      defaultErrorHandler
+      $scope.$restDefaultErrorHandler
     );
   };
 
@@ -47,7 +42,7 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
         $scope.servers.add(Servers.transform(json));
         notifications.addCurrent({type: 'success', msg: ['Started server on port', port].join(' ')});
       },
-      defaultErrorHandler
+      $scope.$restDefaultErrorHandler
     );
   };
 
@@ -58,7 +53,7 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
         $scope.servers.remove(port);
         notifications.addCurrent({type: 'success', msg: ['Stopped server on port', port].join(' ')});
       },
-      defaultErrorHandler
+      $scope.$restDefaultErrorHandler
     );
   }
 
