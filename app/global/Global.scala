@@ -23,7 +23,7 @@ object Global extends GlobalSettings {
   override def onStop(app: Application) {
     CMI.save()
 
-    mmm.shutdown()
+    if (mmm != null) mmm.shutdown()
   }
 
 }
