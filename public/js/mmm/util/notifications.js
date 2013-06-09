@@ -8,7 +8,7 @@ angular.module('util.notifications', [])
   };
 }])
 
-.factory('notifications', ['$rootScope', function ($rootScope) {
+.factory('notifications', ['$rootScope', function($rootScope) {
 
   var notifications = {
     'STICKY': [],
