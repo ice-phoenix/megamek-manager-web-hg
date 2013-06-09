@@ -13,7 +13,7 @@ object Config {
     DB.withConnection("mmmdb") {
       implicit c =>
         (SQL("DELETE FROM Config").executeUpdate())
-        (SQL("INSERT INTO Config(fName, fValue) values ({field}, {value})").asBatch /: cm.asMap()) {
+        (SQL("INSERT INTO Config(fName, fValue) VALUES ({field}, {value})").asBatch /: cm.asMap()) {
           case (sql, e) => sql.addBatchParams(e._1, e._2.toString)
         }.execute()
     }
