@@ -14,13 +14,13 @@
         </li>
       </ul>
 
-      <span class="pull-right" ng-controller="AuthNavCtrl" ng-switch="isLoggedIn()">
+      <span class="pull-right" ng-controller="AuthNavCtrl" ng-switch="isLoggedIn">
         <ul class="nav" ng-switch-when="false">
           <li><a href="/signup" target="_self">Sign up</a></li>
           <li><a href="/login" target="_self">Log in</a></li>
         </ul>
         <ul class="nav" ng-switch-when="true">
-          <li><a>{{username()}}</a></li>
+          <li><a>{{username}}</a></li>
           <li><a href="#" ng-click="logout()">Log out</a></li>
         </ul>
       </span>

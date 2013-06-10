@@ -6,13 +6,13 @@ angular.module('util.auth', ['mmm.rest.users',
     auth.logout();
   };
 
-  $scope.isLoggedIn = function() {
-    return auth.isLoggedIn();
-  };
+  $scope.isLoggedIn = auth.isLoggedIn();
+  $scope.username = auth.username();
 
-  $scope.username = function() {
-    return auth.username();
-  };
+  $scope.$on('auth.userChanged', function(event, oldUser, newUser) {
+    $scope.isLoggedIn = auth.isLoggedIn();
+    $scope.username = auth.username();
+  });
 }])
 
 .factory('auth', ['$rootScope', '$location', '$http', 'notifications', 'Users',
@@ -21,16 +21,24 @@ angular.module('util.auth', ['mmm.rest.users',
   var authService = {};
   var currentUser = null;
 
+  authService.changeUser = function(user) {
+    var oldUser = currentUser;
+    var newUser = user;
+
+    if (oldUser !== newUser) {
+      currentUser = user;
+      $rootScope.$broadcast('auth.userChanged', oldUser, newUser);
+    }
+  };
+
   authService.login = function(user) {
-    currentUser = user;
+    authService.changeUser(user);
   };
 
   authService.logout = function() {
     $http.post('/logout')
     .success(function(data, status, headers, config) {
-      currentUser = null;
-      notifications.addNext({type: 'success', msg: 'Logged out'});
-      $location.path('/');
+      authService.changeUser(null);
     })
     .error(function(data, status, headers, config) {
       notifications.addCurrent({type: 'error', msg: 'Logout failed'});
@@ -53,7 +61,7 @@ angular.module('util.auth', ['mmm.rest.users',
   };
 
   authService.username = function() {
-    if (authService.isLoggedIn) {
+    if (authService.isLoggedIn()) {
       return currentUser.firstName + " " + currentUser.lastName;
     } else {
       return null;
