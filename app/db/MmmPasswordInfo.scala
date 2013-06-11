@@ -4,24 +4,27 @@ import anorm.SqlParser._
 import anorm._
 import securesocial.core.PasswordInfo
 
-case class MmmPasswordInfo(hasher: String,
+case class MmmPasswordInfo(dbId: Long,
+                           hasher: String,
                            password: String,
                            salt: Option[String]) {
-  def asSS = PasswordInfo.tupled(MmmPasswordInfo.unapply(this).get)
+  def asSS = new PasswordInfo(hasher, password, salt)
 }
 
 class MmmPasswordInfoParser(prefix: String = "") {
 
+  val DbId = prefix + "id"
   val Hasher = prefix + "hasher"
   val Password = prefix + "password"
   val Salt = prefix + "salt"
 
   val It: RowParser[MmmPasswordInfo] =
-    get[String](Hasher) ~
+    get[Long](DbId) ~
+      get[String](Hasher) ~
       get[String](Password) ~
       get[Option[String]](Salt) map {
-      case h ~ pwd ~ s => {
-        new MmmPasswordInfo(h, pwd, s)
+      case id ~ h ~ pwd ~ s => {
+        new MmmPasswordInfo(id, h, pwd, s)
       }
     }
 }

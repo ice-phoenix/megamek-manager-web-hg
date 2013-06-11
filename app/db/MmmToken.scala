@@ -6,12 +6,13 @@ import org.joda.time.DateTime
 import securesocial.core.providers.Token
 import util.Anorm.JodaTime.Implicits._
 
-case class MmmToken(uuid: String, email: String, created: DateTime, expires: DateTime, signUp: Boolean) {
-  def asSS = Token.tupled(MmmToken.unapply(this).get)
+case class MmmToken(dbId: Long, uuid: String, email: String, created: DateTime, expires: DateTime, signUp: Boolean) {
+  def asSS = new Token(uuid, email, created, expires, signUp)
 }
 
 class MmmTokenParser(prefix: String = "") {
 
+  val DbId = prefix + "id"
   val Uuid = prefix + "uuid"
   val Email = prefix + "email"
   val Created = prefix + "created"
@@ -19,13 +20,14 @@ class MmmTokenParser(prefix: String = "") {
   val SignUp = prefix + "signUp"
 
   val It: RowParser[MmmToken] =
-    get[String](Uuid) ~
+    get[Long](DbId) ~
+      get[String](Uuid) ~
       get[String](Email) ~
       get[DateTime](Created) ~
       get[DateTime](Expires) ~
       get[Boolean](SignUp) map {
-      case id ~ e ~ ct ~ et ~ s => {
-        new MmmToken(id, e, ct, et, s)
+      case id ~ uid ~ e ~ ct ~ et ~ s => {
+        new MmmToken(id, uid, e, ct, et, s)
       }
     }
 }

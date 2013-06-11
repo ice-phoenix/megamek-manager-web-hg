@@ -4,7 +4,7 @@ import db.MmmPasswordInfo
 import db.MmmUser
 import securesocial.core._
 
-class MmmIdentity(user: MmmUser, pwdInfo: MmmPasswordInfo) extends Identity {
+class MmmIdentity(val user: MmmUser, val pwdInfo: Option[MmmPasswordInfo]) extends Identity {
 
   def id: UserId = user.id
 
@@ -24,6 +24,6 @@ class MmmIdentity(user: MmmUser, pwdInfo: MmmPasswordInfo) extends Identity {
 
   def oAuth2Info: Option[OAuth2Info] = None
 
-  def passwordInfo: Option[PasswordInfo] = Some(pwdInfo.asSS)
+  def passwordInfo: Option[PasswordInfo] = pwdInfo.map { _.asSS }
 
 }

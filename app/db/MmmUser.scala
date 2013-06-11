@@ -4,7 +4,8 @@ import anorm.SqlParser._
 import anorm._
 import securesocial.core._
 
-case class MmmUser(userId: String,
+case class MmmUser(dbId: Long,
+                   userId: String,
                    providerId: String,
                    firstName: String,
                    lastName: String,
@@ -18,6 +19,7 @@ case class MmmUser(userId: String,
 
 class MmmUserParser(prefix: String = "") {
 
+  val DbId = prefix + "id"
   val UserId = prefix + "userId"
   val ProviderId = prefix + "providerId"
   val FirstName = prefix + "firstName"
@@ -27,15 +29,16 @@ class MmmUserParser(prefix: String = "") {
   val AuthType = prefix + "authType"
 
   val It: RowParser[MmmUser] =
-    get[String](UserId) ~
+    get[Long](DbId) ~
+      get[String](UserId) ~
       get[String](ProviderId) ~
       get[String](FirstName) ~
       get[String](LastName) ~
       get[Option[String]](Email) ~
       get[Option[String]](AvatarUrl) ~
       get[String](AuthType) map {
-      case id ~ pid ~ fn ~ ln ~ e ~ url ~ at => {
-        new MmmUser(id, pid, fn, ln, e, url, at)
+      case id ~ uid ~ pid ~ fn ~ ln ~ e ~ url ~ at => {
+        new MmmUser(id, uid, pid, fn, ln, e, url, at)
       }
     }
 }
