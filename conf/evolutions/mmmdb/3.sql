@@ -9,7 +9,8 @@ CREATE TABLE PasswordInfo (
     password VARCHAR(255) NOT NULL,
     salt     VARCHAR(255),
     PRIMARY KEY(id),
-    FOREIGN KEY(user_id) REFERENCES User(id) ON DELETE CASCADE
+    FOREIGN KEY(user_id) REFERENCES User(id) ON DELETE CASCADE,
+    UNIQUE(user_id)
 );
 
 # --- !Downs
