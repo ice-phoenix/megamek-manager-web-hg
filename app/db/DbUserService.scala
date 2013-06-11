@@ -27,7 +27,7 @@ class DbUserService(app: Application) extends UserServicePlugin(app) {
       .singleOpt {
         (MmmUserParser()) ~
           (MmmPasswordInfoParser() ?) map {
-          case u ~ Some(pi) => new MmmIdentity(u, pi)
+          case u ~ pi => new MmmIdentity(u, pi)
         }
       }
   }
@@ -46,56 +46,17 @@ class DbUserService(app: Application) extends UserServicePlugin(app) {
       .singleOpt {
         (MmmUserParser()) ~
           (MmmPasswordInfoParser() ?) map {
-          case u ~ Some(pi) => new MmmIdentity(u, pi)
+          case u ~ pi => new MmmIdentity(u, pi)
         }
       }
   }
 
   def save(user: Identity): Identity = {
     find(user.id) match {
-      case Some(u) => u
-      case None => {
-        saveNew(user)
-        find(user.id).get
-      }
+      case None => User.create(user)
+      case Some(u) => User.update(u.asInstanceOf[MmmIdentity].user.dbId, user)
     }
-  }
-
-  def saveNew(user: Identity) {
-    DB.withConnection("mmmdb") {
-      implicit c =>
-
-        val idOpt: Option[Long] =
-          SQL(
-            """
-              | INSERT INTO User(userId, providerId, firstName, lastName, email, avatarUrl, authType)
-              | VALUES ({userId}, {providerId}, {firstName}, {lastName}, {email}, {avatarUrl}, {authType})
-            """.stripMargin)
-          .on { "userId" -> user.id.id }
-          .on { "providerId" -> user.id.providerId }
-          .on { "firstName" -> user.firstName }
-          .on { "lastName" -> user.lastName }
-          .on { "email" -> user.email }
-          .on { "avatarUrl" -> user.avatarUrl }
-          .on { "authType" -> user.authMethod.method }
-          .executeInsert()
-
-        val id = idOpt.get
-
-        user.passwordInfo.map {
-          pi =>
-            SQL(
-              """
-                | INSERT INTO PasswordInfo(user_id, hasher, password, salt)
-                | VALUES ({user_id}, {hasher}, {password}, {salt})
-              """.stripMargin)
-            .on { "user_id" -> id }
-            .on { "hasher" -> pi.hasher }
-            .on { "password" -> pi.password }
-            .on { "salt" -> pi.salt }
-            .executeInsert()
-        }
-    }
+    find(user.id).get
   }
 
   def save(token: Token) {
