@@ -2,7 +2,7 @@ angular.module('mmm.rest.servers', ['ngResource'])
 
 .factory('Servers', ['$resource', function($resource) {
   var Servers = $resource(
-    '/mmm/servers/:port',
+    '/api/servers/:port',
     {},
     {
       'put': { method: 'PUT', params: {port: '@port'} }

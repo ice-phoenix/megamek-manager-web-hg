@@ -2,7 +2,7 @@ angular.module('mmm.rest.users', ['ngResource'])
 
 .factory('Users', ['$resource', function($resource) {
   var Users = $resource(
-    '/auth/users/:id',
+    '/api/users/:id',
     {},
     {
       'current': { method: 'GET', params: {id: 'current'}, isArray: false }

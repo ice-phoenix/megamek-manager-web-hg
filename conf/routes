@@ -11,14 +11,14 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 ########################################################################################################################
 # MegaMek Manager REST API
 
-GET     /mmm/servers                controllers.mmm.Servers.query
-PUT     /mmm/servers/:port          controllers.mmm.Servers.create(port: Int, password: String ?= "")
-DELETE  /mmm/servers/:port          controllers.mmm.Servers.delete(port: Int)
+GET     /api/servers                controllers.mmm.Servers.query
+PUT     /api/servers/:port          controllers.mmm.Servers.create(port: Int, password: String ?= "")
+DELETE  /api/servers/:port          controllers.mmm.Servers.delete(port: Int)
 
-GET     /mmm/admin/config           controllers.mmm.admin.Config.get
-PUT     /mmm/admin/config           controllers.mmm.admin.Config.set
+GET     /api/admin/config           controllers.mmm.admin.Config.get
+PUT     /api/admin/config           controllers.mmm.admin.Config.set
 
-GET     /auth/users/current         controllers.auth.Users.current
+GET     /api/users/current         controllers.auth.Users.current
 
 ########################################################################################################################
 # SecureSocial stuff

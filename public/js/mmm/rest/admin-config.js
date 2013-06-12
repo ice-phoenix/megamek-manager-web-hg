@@ -2,7 +2,7 @@ angular.module('mmm.rest.admin.config', ['ngResource'])
 
 .factory('AdminConfig', ['$resource', function($resource) {
   var AdminConfig = $resource(
-    '/mmm/admin/config',
+    '/api/admin/config',
     {},
     {
       'put': { method: 'PUT', params: {} }
