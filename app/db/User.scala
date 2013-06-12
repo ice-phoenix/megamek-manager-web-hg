@@ -3,7 +3,7 @@ package db
 import anorm._
 import auth.MmmIdentity
 import play.api.db.DB
-import securesocial.core.Identity
+import securesocial.core.{UserId, Identity}
 
 object User {
 
@@ -46,8 +46,48 @@ object User {
     }
   }
 
+  def forUserId(uid: UserId): Option[MmmIdentity] = DB.withConnection("mmmdb") {
+    implicit c =>
+      SQL(
+        """
+          | SELECT u.*, pi.*
+          | FROM User u
+          | LEFT OUTER JOIN PasswordInfo pi
+          |   ON u.id = pi.user_id
+          | WHERE u.userId = {userId} AND u.providerId = {providerId}
+        """.stripMargin)
+      .on { "userId" -> uid.id }
+      .on { "providerId" -> uid.providerId }
+      .singleOpt {
+        (MmmUserParser()) ~
+          (MmmPasswordInfoParser() ?) map {
+          case u ~ pi => new MmmIdentity(u, pi)
+        }
+      }
+  }
+
+  def forEmailAndProvider(email: String, provider: String): Option[MmmIdentity] = DB.withConnection("mmmdb") {
+    implicit c =>
+      SQL(
+        """
+          | SELECT u.*, pi.*
+          | FROM User u
+          | LEFT OUTER JOIN PasswordInfo pi
+          |   ON u.id = pi.user_id
+          | WHERE u.email = {email} AND u.providerId = {provider}
+        """.stripMargin)
+      .on { "email" -> email }
+      .on { "providerId" -> provider }
+      .singleOpt {
+        (MmmUserParser()) ~
+          (MmmPasswordInfoParser() ?) map {
+          case u ~ pi => new MmmIdentity(u, pi)
+        }
+      }
+  }
+
   def update(user: MmmIdentity) {
-    update(user.user.dbId, user);
+    update(user.user.dbId, user)
   }
 
   def update(userId: Long, user: Identity) {

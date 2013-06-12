@@ -13,42 +13,24 @@ class DbUserService(app: Application) extends UserServicePlugin(app) {
 
   implicit val implicitDateTimeToAnorm = util.Anorm.JodaTime.Implicits.dateTimeToAnorm
 
-  def find(user: UserId): Option[Identity] = DB.withConnection("mmmdb") {
-    implicit c =>
-      SQL(
-        """
-          | SELECT u.*, pi.* FROM User u
-          | LEFT OUTER JOIN PasswordInfo pi
-          | ON u.id = pi.user_id
-          | WHERE u.userId = {userId} AND u.providerId = {providerId}
-        """.stripMargin)
-      .on { "userId" -> user.id }
-      .on { "providerId" -> user.providerId }
-      .singleOpt {
-        (MmmUserParser()) ~
-          (MmmPasswordInfoParser() ?) map {
-          case u ~ pi => new MmmIdentity(u, pi)
-        }
+  def find(uid: UserId): Option[Identity] = {
+    User.forUserId(uid)
+    .map {
+      case user => {
+        user.hands = Hand.forUser(user)
+        user
       }
+    }
   }
 
-  def findByEmailAndProvider(email: String, providerId: String): Option[Identity] = DB.withConnection("mmmdb") {
-    implicit c =>
-      SQL(
-        """
-          | SELECT u.*, pi.* FROM User u
-          | LEFT OUTER JOIN PasswordInfo pi
-          | ON u.id = pi.user_id
-          | WHERE u.email = {email} AND u.providerId = {providerId}
-        """.stripMargin)
-      .on { "email" -> email }
-      .on { "providerId" -> providerId }
-      .singleOpt {
-        (MmmUserParser()) ~
-          (MmmPasswordInfoParser() ?) map {
-          case u ~ pi => new MmmIdentity(u, pi)
-        }
+  def findByEmailAndProvider(email: String, provider: String): Option[Identity] = {
+    User.forEmailAndProvider(email, provider)
+    .map {
+      case user => {
+        user.hands = Hand.forUser(user)
+        user
       }
+    }
   }
 
   def save(user: Identity): Identity = {
