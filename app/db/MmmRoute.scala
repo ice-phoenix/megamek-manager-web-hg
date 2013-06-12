@@ -12,19 +12,19 @@ trait RoutePermission {
 case class CombinedPermission(mask: Byte) extends RoutePermission
 
 case object CreateAllowed extends RoutePermission {
-  val mask = 0x01
+  val mask: Byte = 0x01
 }
 
 case object ReadAllowed extends RoutePermission {
-  val mask = 0x02
+  val mask: Byte = 0x02
 }
 
 case object UpdateAllowed extends RoutePermission {
-  val mask = 0x04
+  val mask: Byte = 0x04
 }
 
 case object DeleteAllowed extends RoutePermission {
-  val mask = 0x08
+  val mask: Byte = 0x08
 }
 
 case class MmmRoute(dbId: Long, pattern: String, mode: Byte) {
