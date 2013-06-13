@@ -1,7 +1,8 @@
 package db
 
 import anorm._
-import auth.MmmIdentity
+import db.model.MmmIdentity
+import db.model.basic.{MmmUserParser, MmmPasswordInfoParser}
 import play.api.db.DB
 import securesocial.core.{UserId, Identity}
 

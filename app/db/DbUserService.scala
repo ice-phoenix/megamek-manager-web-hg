@@ -1,20 +1,14 @@
 package db
 
-import anorm._
-import auth.MmmIdentity
+import db.model.MmmIdentity
 import play.api.Application
-import play.api.db.DB
-import securesocial.core.providers.Token
-import securesocial.core.{Identity, UserId, UserServicePlugin}
+import securesocial.core._
+import securesocial.core.providers.{Token => SSToken}
 
 class DbUserService(app: Application) extends UserServicePlugin(app) {
 
-  import play.api.Play.current
-
-  implicit val implicitDateTimeToAnorm = util.Anorm.JodaTime.Implicits.dateTimeToAnorm
-
   def find(uid: UserId): Option[Identity] = {
-    User.forUserId(uid)
+    db.User.forUserId(uid)
     .map {
       case user => {
         user.hands = Hand.forUser(user)
@@ -24,7 +18,7 @@ class DbUserService(app: Application) extends UserServicePlugin(app) {
   }
 
   def findByEmailAndProvider(email: String, provider: String): Option[Identity] = {
-    User.forEmailAndProvider(email, provider)
+    db.User.forEmailAndProvider(email, provider)
     .map {
       case user => {
         user.hands = Hand.forUser(user)
@@ -34,59 +28,27 @@ class DbUserService(app: Application) extends UserServicePlugin(app) {
   }
 
   def save(user: Identity): Identity = {
-    find(user.id) match {
-      case None => User.create(user)
-      case Some(u) => User.update(u.asInstanceOf[MmmIdentity].user.dbId, user)
+    db.User.forUserId(user.id) match {
+      case None => db.User.create(user)
+      case Some(u) => db.User.update(u.asInstanceOf[MmmIdentity].user.dbId, user)
     }
     find(user.id).get
   }
 
-  def save(token: Token) {
-    DB.withConnection("mmmdb") {
-      implicit c =>
-        SQL(
-          """
-            | INSERT INTO Token(uuid, email, created, expires, signUp)
-            | VALUES ({uuid}, {email}, {created}, {expires}, {signUp})
-          """.stripMargin)
-        .on { "uuid" -> token.uuid }
-        .on { "email" -> token.email }
-        .on { "created" -> token.creationTime }
-        .on { "expires" -> token.expirationTime }
-        .on { "signUp" -> token.isSignUp }
-        .executeInsert()
-    }
+  def save(token: SSToken) {
+    db.Token.create(token)
   }
 
-  def findToken(uuid: String): Option[Token] = DB.withConnection("mmmdb") {
-    implicit c =>
-      SQL(
-        """
-          | SELECT t.* FROM Token t
-          | WHERE t.uuid = {uuid}
-        """.stripMargin)
-      .on { "uuid" -> uuid }
-      .singleOpt {
-        MmmTokenParser() map {
-          case t => t.asSS
-        }
-      }
+  def findToken(uuid: String): Option[SSToken] = {
+    db.Token.forUuid(uuid).map { _.asSS }
   }
 
   def deleteToken(uuid: String) {
-    DB.withConnection("mmmdb") {
-      implicit c =>
-        SQL("DELETE FROM Token WHERE uuid = {uuid}")
-        .on { "uuid" -> uuid }
-        .executeUpdate()
-    }
+    db.Token.delete(uuid)
   }
 
   def deleteExpiredTokens() {
-    DB.withConnection("mmmdb") {
-      implicit c =>
-        SQL("DELETE FROM Token WHERE expires > CURRENT_TIMESTAMP")
-        .executeUpdate()
-    }
+    db.Token.deleteExpired()
   }
+
 }

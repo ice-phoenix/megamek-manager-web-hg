@@ -1,7 +1,6 @@
-package auth
+package db.model
 
-import db.MmmPasswordInfo
-import db.MmmUser
+import db.model.basic.{MmmUser, MmmPasswordInfo}
 import securesocial.core._
 
 class MmmIdentity(val user: MmmUser,

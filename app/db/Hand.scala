@@ -1,7 +1,8 @@
 package db
 
 import anorm._
-import auth.{MmmHand, MmmIdentity}
+import db.model.basic.{MmmRouteParser, MmmRoleParser}
+import db.model.{MmmHand, MmmIdentity}
 import play.api.db.DB
 
 object Hand {

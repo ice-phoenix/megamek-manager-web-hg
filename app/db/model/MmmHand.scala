@@ -1,6 +1,6 @@
-package auth
+package db.model
 
-import db.{MmmRole, MmmRoute}
+import db.model.basic.{MmmRoute, MmmRole}
 
 class MmmHand(val role: MmmRole, val routes: List[MmmRoute]) {
 

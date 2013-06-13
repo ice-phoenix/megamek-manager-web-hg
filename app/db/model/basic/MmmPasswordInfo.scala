@@ -1,4 +1,4 @@
-package db
+package db.model.basic
 
 import anorm.SqlParser._
 import anorm._
