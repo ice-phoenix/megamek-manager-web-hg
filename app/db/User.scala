@@ -75,7 +75,7 @@ object User {
           | FROM User u
           | LEFT OUTER JOIN PasswordInfo pi
           |   ON u.id = pi.user_id
-          | WHERE u.email = {email} AND u.providerId = {provider}
+          | WHERE u.email = {email} AND u.providerId = {providerId}
         """.stripMargin)
       .on { "email" -> email }
       .on { "providerId" -> provider }
