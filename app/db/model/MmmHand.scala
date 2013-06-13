@@ -8,4 +8,8 @@ class MmmHand(val role: MmmRole, val routes: List[MmmRoute]) {
 
   def matches(route: String) = routes.filter { _.matches(route) }
 
+  override def toString = {
+    role.toString + "->(" + routes.map { _.toString }.reduce { _ + "," + _ } + ")"
+  }
+
 }

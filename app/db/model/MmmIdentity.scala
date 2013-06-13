@@ -28,4 +28,8 @@ class MmmIdentity(val user: MmmUser,
 
   var hands = List.empty[MmmHand]
 
+  override def toString = {
+    user.toString + ":" + pwdInfo.toString + ":" + hands.toString
+  }
+
 }
