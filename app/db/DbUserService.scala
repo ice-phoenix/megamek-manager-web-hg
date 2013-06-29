@@ -8,7 +8,7 @@ import securesocial.core.providers.{Token => SSToken}
 class DbUserService(app: Application) extends UserServicePlugin(app) {
 
   def find(uid: UserId): Option[Identity] = {
-    db.User.forUserId(uid)
+    db.Identity.forUserId(uid)
     .map {
       case user => {
         user.hands = Hand.forUser(user)
@@ -18,7 +18,7 @@ class DbUserService(app: Application) extends UserServicePlugin(app) {
   }
 
   def findByEmailAndProvider(email: String, provider: String): Option[Identity] = {
-    db.User.forEmailAndProvider(email, provider)
+    db.Identity.forEmailAndProvider(email, provider)
     .map {
       case user => {
         user.hands = Hand.forUser(user)
@@ -28,9 +28,9 @@ class DbUserService(app: Application) extends UserServicePlugin(app) {
   }
 
   def save(user: Identity): Identity = {
-    db.User.forUserId(user.id) match {
-      case None => db.User.create(user)
-      case Some(u) => db.User.update(u.asInstanceOf[MmmIdentity].user.dbId, user)
+    db.Identity.forUserId(user.id) match {
+      case None => db.Identity.create(user)
+      case Some(u) => db.Identity.update(u.asInstanceOf[MmmIdentity].user.dbId, user)
     }
     find(user.id).get
   }

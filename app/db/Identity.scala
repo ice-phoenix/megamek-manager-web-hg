@@ -6,7 +6,7 @@ import db.model.basic.{MmmUserParser, MmmPasswordInfoParser}
 import play.api.db.DB
 import securesocial.core.{UserId, Identity}
 
-object User {
+object Identity {
 
   import play.api.Play.current
 
