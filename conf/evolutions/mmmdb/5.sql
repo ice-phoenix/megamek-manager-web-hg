@@ -18,6 +18,12 @@ CREATE TABLE User_Role (
     UNIQUE(user_id, role_id)
 );
 
+INSERT INTO Role(id, name)
+VALUES (1, 'God');
+
+INSERT INTO User_Role(user_id, role_id)
+VALUES (1, 1);
+
 # --- !Downs
 
 DROP TABLE User_Role;

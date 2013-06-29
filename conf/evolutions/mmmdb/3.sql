@@ -13,6 +13,9 @@ CREATE TABLE PasswordInfo (
     UNIQUE(user_id)
 );
 
+INSERT INTO PasswordInfo(id, user_id, hasher, password, salt)
+VALUES (1, 1, 'bcrypt', '$2a$10$GBZ4/5CI5g8tcEMgAYvRNOeLyxS7lhKa3ynVd8DxmNADlZvdTxXq6', null);
+
 # --- !Downs
 
 DROP TABLE PasswordInfo;

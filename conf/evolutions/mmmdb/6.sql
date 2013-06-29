@@ -19,6 +19,12 @@ CREATE TABLE Role_Route (
     UNIQUE(role_id, route_id)
 );
 
+INSERT INTO Route(id, pattern, mode)
+VALUES (1, '.*', 127);
+
+INSERT INTO Role_Route(role_id, route_id)
+VALUES (1, 1);
+
 # --- !Downs
 
 DROP TABLE Role_Route;

@@ -15,6 +15,9 @@ CREATE TABLE User (
     UNIQUE(userId, providerId)
 );
 
+INSERT INTO User(id, userId, providerId, firstName, lastName, email, avatarUrl, authType)
+VALUES (1, 'god@mmm', 'userpass', 'The', 'One', 'god@mmm', null, 'userPassword');
+
 # --- !Downs
 
 DROP TABLE User;
