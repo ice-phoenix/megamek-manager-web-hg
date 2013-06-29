@@ -4,13 +4,13 @@ import anorm._
 import db.model.MmmIdentity
 import db.model.basic.{MmmUserParser, MmmPasswordInfoParser}
 import play.api.db.DB
-import securesocial.core.{UserId, Identity}
+import securesocial.core.{UserId, Identity => SSIdentity}
 
 object Identity {
 
   import play.api.Play.current
 
-  def create(user: Identity) {
+  def create(user: SSIdentity) {
     DB.withConnection("mmmdb") {
       implicit c =>
 
@@ -91,7 +91,7 @@ object Identity {
     update(user.user.dbId, user)
   }
 
-  def update(userId: Long, user: Identity) {
+  def update(userId: Long, user: SSIdentity) {
     DB.withConnection("mmmdb") {
       implicit c =>
 
