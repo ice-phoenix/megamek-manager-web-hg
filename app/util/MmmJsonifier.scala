@@ -2,6 +2,7 @@ package util
 
 import BetterStringOps.Implicits._
 import db.model.MmmIdentity
+import db.model.basic.MmmRole
 import info.icephoenix.mmm.data._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Writes._
@@ -66,13 +67,20 @@ object MmmJsonifier {
     }
   }
 
+  implicit val MmmRoleWrites: Writes[MmmRole] =
+    ((__ \ 'dbId).write[Long] ~
+      (__ \ 'name).write[String]) {
+      r: MmmRole => (r.dbId, r.name)
+    }
+
   val WhoAmIWrites: Writes[MmmIdentity] =
     ((__ \ 'firstName).write[String] ~
       (__ \ 'lastName).write[String] ~
       (__ \ 'fullName).write[String] ~
       (__ \ 'email).writeNullable[String] ~
-      (__ \ 'avatarUrl).writeNullable[String]) {
-      u: MmmIdentity => (u.firstName, u.lastName, u.fullName, u.email, u.avatarUrl)
+      (__ \ 'avatarUrl).writeNullable[String] ~
+      (__ \ 'roles).write[List[String]]) {
+      u: MmmIdentity => (u.firstName, u.lastName, u.fullName, u.email, u.avatarUrl, u.roles.map { _.name })
     }
 
   implicit val MmmIdentityWrites: Writes[MmmIdentity] =
@@ -83,8 +91,9 @@ object MmmJsonifier {
       (__ \ 'lastName).write[String] ~
       (__ \ 'fullName).write[String] ~
       (__ \ 'email).writeNullable[String] ~
-      (__ \ 'avatarUrl).writeNullable[String]) {
-      u: MmmIdentity => (u.dbId, u.id.id, u.id.providerId, u.firstName, u.lastName, u.fullName, u.email, u.avatarUrl)
+      (__ \ 'avatarUrl).writeNullable[String] ~
+      (__ \ 'roles).write[List[MmmRole]]) {
+      u: MmmIdentity => (u.dbId, u.id.id, u.id.providerId, u.firstName, u.lastName, u.fullName, u.email, u.avatarUrl, u.roles)
     }
 
 }
