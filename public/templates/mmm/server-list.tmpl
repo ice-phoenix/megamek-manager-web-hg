@@ -22,7 +22,9 @@
       <td>{{servers.get(id).port}}</td>
       <td>{{servers.get(id).players.join(', ')}}</td>
       <td>{{servers.get(id).status}}</td>
-      <td><a class="close danger" ng-click="stopServerWithConfirm(id)">&times;</a></td>
+      <td><span active-on-role="Admin">
+        <a class="close danger" ng-click="stopServerWithConfirm(id)">&times;</a>
+      </span></td>
     </tr>
     </tbody>
   </table>

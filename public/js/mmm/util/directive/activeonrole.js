@@ -19,6 +19,10 @@ angular.module('util.directive.activeonrole', ['util.auth'])
         }
       };
 
+      scope.$on('auth.userChanged', function(event, oldUser, newUser) {
+        $update();
+      });
+
       $update();
     }
   };
