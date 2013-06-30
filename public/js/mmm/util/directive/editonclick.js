@@ -20,13 +20,13 @@ angular.module('util.directive.editonclick', ['util.directive.onkeyup'])
       var $valueGetter = $parse(attrs.value);
       var $valueSetter = $valueGetter.assign || angular.noop;
 
-      var onEditOnCallback = $parse(attrs.onEditOn);
+      var $onEditOnCallback = $parse(attrs.onEditOn);
       var $onEditOn = function() {
-        onEditOnCallback(scope);
+        $onEditOnCallback(scope);
       };
-      var onEditOffCallback = $parse(attrs.onEditOff);
+      var $onEditOffCallback = $parse(attrs.onEditOff);
       var $onEditOff = function() {
-        onEditOffCallback(scope);
+        $onEditOffCallback(scope);
       };
 
       // Helper functions
