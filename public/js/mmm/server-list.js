@@ -1,5 +1,6 @@
 angular.module('mmm.serverlist', ['ui.bootstrap',
                                   'mmm.rest.servers',
+                                  'util.directive.activeonrole',
                                   'util.notifications',
                                   'util.modals',
                                   'util.collections'])

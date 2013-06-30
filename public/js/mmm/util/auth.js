@@ -66,7 +66,16 @@ angular.module('util.auth', ['mmm.rest.whoami',
     } else {
       return null;
     }
-  }
+  };
+
+  authService.hasRole = function(role) {
+    if (authService.isLoggedIn()) {
+      if (currentUser.roles.indexOf(role) > -1) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   return authService;
 }]);
