@@ -1,17 +1,12 @@
 angular.module('mmm.adminpanel', ['ui.bootstrap',
-                                  'util.notifications',
-                                  'util.modals',
-                                  'util.collections'])
+                                  'util.auth'])
 
-.config(['$routeProvider', function($routeProvider) {
+.config(['$routeProvider', 'authDeferProvider', function($routeProvider, authDeferProvider) {
   $routeProvider
     .when('/admin', {
       templateUrl: '/assets/templates/mmm/admin-panel.tmpl',
-      controller: 'AdminPanelCtrl'
+      resolve: {
+        requiredRole: authDeferProvider.requiredRole('Admin')
+      }
     })
-}])
-
-.controller('AdminPanelCtrl', ['$scope', 'notifications', 'modals', 'collections',
-                      function( $scope,   notifications,   modals,   collections ) {
-  // EMPTY
 }]);

@@ -78,4 +78,27 @@ angular.module('util.auth', ['mmm.rest.whoami',
   };
 
   return authService;
-}]);
+}])
+
+.provider('authDefer', {
+
+  requiredRole: function(role) {
+    return function(authDefer) {
+      return authDefer.requiredRole(role);
+    };
+  },
+
+  $get: ['auth', '$q', function(auth, $q) {
+    var authDeferService = {};
+
+    authDeferService.requiredRole = function(role) {
+      var deferred = $q.defer();
+      if (auth.hasRole(role)) deferred.resolve(true);
+      else deferred.reject(['Required role:', role].join(' '));
+      return deferred.promise;
+    };
+
+    return authDeferService;
+  }]
+
+});
