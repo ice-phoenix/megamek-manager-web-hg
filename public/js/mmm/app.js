@@ -5,6 +5,7 @@ angular.module('mmm', ['ui.bootstrap',
                        'mmm.welcome',
                        'util.auth',
                        'util.breadcrumbs',
+                       'util.exceptionHandler',
                        'util.notifications'])
 
 .config(['$dialogProvider',
