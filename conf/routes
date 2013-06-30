@@ -18,7 +18,9 @@ DELETE  /api/servers/:port          controllers.mmm.Servers.delete(port: Int)
 GET     /api/admin/config           controllers.mmm.admin.Config.get
 PUT     /api/admin/config           controllers.mmm.admin.Config.set
 
-GET     /api/users/current         controllers.auth.Users.current
+GET     /api/whoami                controllers.auth.Users.whoAmI
+GET     /api/users                 controllers.auth.Users.query
+GET     /api/users/:dbId           controllers.auth.Users.read(dbId: Long)
 
 ########################################################################################################################
 # SecureSocial stuff

@@ -1,4 +1,4 @@
-angular.module('util.auth', ['mmm.rest.users',
+angular.module('util.auth', ['mmm.rest.whoami',
                              'util.notifications'])
 
 .controller('AuthNavCtrl', ['$scope', 'auth', function($scope, auth) {
@@ -15,8 +15,8 @@ angular.module('util.auth', ['mmm.rest.users',
   });
 }])
 
-.factory('auth', ['$rootScope', '$location', '$http', 'notifications', 'Users',
-         function( $rootScope,   $location,   $http,   notifications,   Users ) {
+.factory('auth', ['$rootScope', '$location', '$http', 'notifications', 'WhoAmI',
+         function( $rootScope,   $location,   $http,   notifications,   WhoAmI ) {
 
   var authService = {};
   var currentUser = null;
@@ -46,10 +46,10 @@ angular.module('util.auth', ['mmm.rest.users',
   };
 
   authService.update = function() {
-    Users.current(
+    WhoAmI.get(
       {},
       function(json) {
-        var user = Users.transform(json);
+        var user = WhoAmI.transform(json);
         authService.login(user);
       },
       $rootScope.$restDefaultErrorHandler

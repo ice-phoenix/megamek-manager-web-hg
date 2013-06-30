@@ -2,7 +2,7 @@ package db
 
 import anorm._
 import db.model.MmmIdentity
-import db.model.basic.{MmmUserParser, MmmPasswordInfoParser}
+import db.model.basic._
 import play.api.db.DB
 import securesocial.core.{UserId, Identity => SSIdentity}
 
@@ -47,6 +47,53 @@ object Identity {
     }
   }
 
+  def query(): List[MmmIdentity] = DB.withConnection("mmmdb") {
+    implicit c => {
+      SQL(
+        """
+          | SELECT u.*, pi.*
+          | FROM User u
+          | LEFT OUTER JOIN PasswordInfo pi
+          |   ON u.id = pi.user_id
+        """.stripMargin)
+      .list {
+        (MmmUserParser()) ~
+          (MmmPasswordInfoParser() ?) map {
+          case u ~ pi => new MmmIdentity(u, pi)
+        }
+      }.map {
+        case user => {
+          user.roles = Role.forUser(user)
+          user
+        }
+      }.toList
+    }
+  }
+
+  def forDbId(dbId: Long): Option[MmmIdentity] = DB.withConnection("mmmdb") {
+    implicit c =>
+      SQL(
+        """
+          | SELECT u.*, pi.*
+          | FROM User u
+          | LEFT OUTER JOIN PasswordInfo pi
+          |   ON u.id = pi.user_id
+          | WHERE u.id = {id}
+        """.stripMargin)
+      .on { "id" -> dbId }
+      .singleOpt {
+        (MmmUserParser()) ~
+          (MmmPasswordInfoParser() ?) map {
+          case u ~ pi => new MmmIdentity(u, pi)
+        }
+      }.map {
+        case user => {
+          user.roles = Role.forUser(user)
+          user
+        }
+      }
+  }
+
   def forUserId(uid: UserId): Option[MmmIdentity] = DB.withConnection("mmmdb") {
     implicit c =>
       SQL(
@@ -63,6 +110,11 @@ object Identity {
         (MmmUserParser()) ~
           (MmmPasswordInfoParser() ?) map {
           case u ~ pi => new MmmIdentity(u, pi)
+        }
+      }.map {
+        case user => {
+          user.roles = Role.forUser(user)
+          user
         }
       }
   }
@@ -84,14 +136,25 @@ object Identity {
           (MmmPasswordInfoParser() ?) map {
           case u ~ pi => new MmmIdentity(u, pi)
         }
+      }.map {
+        case user => {
+          user.roles = Role.forUser(user)
+          user
+        }
       }
   }
 
-  def update(user: MmmIdentity) {
-    update(user.user.dbId, user)
+  def updateWith(mmmUser: MmmIdentity, ssUser: SSIdentity) {
+    val user = MmmUser(mmmUser.dbId, ssUser.id.id, ssUser.id.providerId, ssUser.firstName, ssUser.lastName, ssUser.email, ssUser.avatarUrl, ssUser.authMethod.method)
+    val passwordInfo = ssUser.passwordInfo.map {
+      case pi => MmmPasswordInfo(-1, pi.hasher, pi.password, pi.salt)
+    }
+    val identity = new MmmIdentity(user, passwordInfo)
+
+    update(identity)
   }
 
-  def update(userId: Long, user: SSIdentity) {
+  def update(user: MmmIdentity) {
     DB.withConnection("mmmdb") {
       implicit c =>
 
@@ -107,7 +170,7 @@ object Identity {
             |     authType={authType}
             | WHERE id={id}
           """.stripMargin)
-        .on { "id" -> userId }
+        .on { "id" -> user.dbId }
         .on { "userId" -> user.id.id }
         .on { "providerId" -> user.id.providerId }
         .on { "firstName" -> user.firstName }
@@ -127,7 +190,7 @@ object Identity {
                 |     salt={salt}
                 | WHERE user_id={user_id}
               """.stripMargin)
-            .on { "user_id" -> userId }
+            .on { "user_id" -> user.dbId }
             .on { "hasher" -> pi.hasher }
             .on { "password" -> pi.password }
             .on { "salt" -> pi.salt }

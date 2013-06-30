@@ -19,10 +19,14 @@ CREATE TABLE User_Role (
 );
 
 INSERT INTO Role(id, name)
-VALUES (1, 'God');
+VALUES (1, 'God'),
+       (2, 'Admin'),
+       (3, 'User');
 
 INSERT INTO User_Role(user_id, role_id)
-VALUES (1, 1);
+VALUES (1, 1),
+       (1, 2),
+       (1, 3);
 
 # --- !Downs
 

@@ -1,10 +1,12 @@
 package db.model
 
-import db.model.basic.{MmmUser, MmmPasswordInfo}
+import db.model.basic.{MmmRole, MmmUser, MmmPasswordInfo}
 import securesocial.core._
 
 class MmmIdentity(val user: MmmUser,
                   val pwdInfo: Option[MmmPasswordInfo]) extends Identity {
+
+  def dbId: Long = user.dbId
 
   def id: UserId = user.id
 
@@ -26,10 +28,14 @@ class MmmIdentity(val user: MmmUser,
 
   def passwordInfo: Option[PasswordInfo] = pwdInfo.map { _.asSS }
 
-  var hands = List.empty[MmmHand]
+
+  var roles = List.empty[MmmRole]
+
+  def is(role: String) = roles.exists { role == _.name }
+
 
   override def toString = {
-    user.toString + ":" + pwdInfo.toString + ":" + hands.toString
+    user.toString + ":" + pwdInfo.toString + ":" + roles.toString
   }
 
 }

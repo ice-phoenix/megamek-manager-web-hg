@@ -1,12 +1,12 @@
 package util
 
 import BetterStringOps.Implicits._
+import db.model.MmmIdentity
 import info.icephoenix.mmm.data._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import scala.reflect.runtime.{universe => ru}
-import securesocial.core.Identity
 
 object MmmJsonifier {
 
@@ -66,12 +66,25 @@ object MmmJsonifier {
     }
   }
 
-  implicit val IdentityWrites: Writes[Identity] =
+  val WhoAmIWrites: Writes[MmmIdentity] =
     ((__ \ 'firstName).write[String] ~
       (__ \ 'lastName).write[String] ~
+      (__ \ 'fullName).write[String] ~
       (__ \ 'email).writeNullable[String] ~
       (__ \ 'avatarUrl).writeNullable[String]) {
-      u: Identity => (u.firstName, u.lastName, u.email, u.avatarUrl)
+      u: MmmIdentity => (u.firstName, u.lastName, u.fullName, u.email, u.avatarUrl)
+    }
+
+  implicit val MmmIdentityWrites: Writes[MmmIdentity] =
+    ((__ \ 'dbId).write[Long] ~
+      (__ \ 'userId).write[String] ~
+      (__ \ 'providerId).write[String] ~
+      (__ \ 'firstName).write[String] ~
+      (__ \ 'lastName).write[String] ~
+      (__ \ 'fullName).write[String] ~
+      (__ \ 'email).writeNullable[String] ~
+      (__ \ 'avatarUrl).writeNullable[String]) {
+      u: MmmIdentity => (u.dbId, u.id.id, u.id.providerId, u.firstName, u.lastName, u.fullName, u.email, u.avatarUrl)
     }
 
 }
