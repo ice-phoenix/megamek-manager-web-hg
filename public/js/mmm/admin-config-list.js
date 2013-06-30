@@ -1,15 +1,19 @@
 angular.module('mmm.adminconfiglist', ['ui.bootstrap',
                                        'mmm.rest.admin.config',
+                                       'util.auth',
                                        'util.directive.editonclick',
                                        'util.notifications',
                                        'util.modals',
                                        'util.collections'])
 
-.config(['$routeProvider', function($routeProvider) {
+.config(['$routeProvider', 'authDeferProvider', function($routeProvider, authDeferProvider) {
   $routeProvider
     .when('/admin/config', {
       templateUrl: '/assets/templates/mmm/admin-config-list.tmpl',
-      controller: 'AdminConfigListCtrl'
+      controller: 'AdminConfigListCtrl',
+      resolve: {
+        requiredRole: authDeferProvider.requiredRole('Admin')
+      }
     })
 }])
 
