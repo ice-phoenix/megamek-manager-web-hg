@@ -15,8 +15,8 @@ function( $dialogProvider ) {
 
 }])
 
-.run([   '$rootScope', '$window', 'notifications',
-function( $rootScope,   $window,   notifications ) {
+.run([   '$rootScope', '$window', 'auth', 'notifications',
+function( $rootScope,   $window,   auth,   notifications ) {
 
   $rootScope.$restDefaultErrorHandler = function(error) {
     var msg = error.data.msg || 'Unknown error';
@@ -24,8 +24,7 @@ function( $rootScope,   $window,   notifications ) {
   };
 
   $rootScope.$on('$routeChangeError', function(event, current, previous, errMsg) {
-    $window.history.back();
-    notifications.addNext({type: 'error', msg: errMsg});
+    notifications.addCurrent({type: 'error', msg: errMsg});
   });
 
   auth.update();
