@@ -1,15 +1,19 @@
 angular.module('mmm.serverlist', ['ui.bootstrap',
                                   'mmm.rest.servers',
+                                  'util.auth',
                                   'util.directive.activeonrole',
                                   'util.notifications',
                                   'util.modals',
                                   'util.collections'])
 
-.config(['$routeProvider', function($routeProvider) {
+.config(['$routeProvider', 'authDeferProvider', function($routeProvider, authDeferProvider) {
   $routeProvider
     .when('/servers', {
       templateUrl: '/assets/templates/mmm/server-list.tmpl',
-      controller: 'ServerListCtrl'
+      controller: 'ServerListCtrl',
+      resolve: {
+        requiredRole: authDeferProvider.requiredRole('User')
+      }
     })
 }])
 
