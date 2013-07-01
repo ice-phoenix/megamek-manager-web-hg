@@ -19,7 +19,7 @@ angular.module('util.auth', ['mmm.rest.whoami',
          function( $rootScope,   $location,   $http,   notifications,   WhoAmI ) {
 
   var authService = {};
-  var currentUser = null;
+  var currentUser = undefined;
 
   authService.changeUser = function(user) {
     var oldUser = currentUser;
@@ -45,37 +45,42 @@ angular.module('util.auth', ['mmm.rest.whoami',
     });
   };
 
-  authService.update = function() {
-    WhoAmI.get(
-      {},
-      function(json) {
-        var user = WhoAmI.transform(json);
-        authService.login(user);
-      },
-      $rootScope.$restDefaultErrorHandler
-    );
+  authService.update = function(callback) {
+    if (angular.isUndefined(currentUser)) {
+      return WhoAmI.get(
+        {},
+        function(json) {
+          var user = WhoAmI.transform(json);
+          authService.login(user);
+          return callback();
+        },
+        $rootScope.$restDefaultErrorHandler
+      );
+    } else {
+      return callback();
+    }
   };
 
-  authService.isLoggedIn = function() {
+  authService.isLoggedIn = function() { return authService.update(function() {
     return !!currentUser;
-  };
+  })};
 
-  authService.username = function() {
+  authService.username = function() { return authService.update(function() {
     if (authService.isLoggedIn()) {
       return currentUser.firstName + " " + currentUser.lastName;
     } else {
       return null;
     }
-  };
+  })};
 
-  authService.hasRole = function(role) {
+  authService.hasRole = function(role) { return authService.update(function() {
     if (authService.isLoggedIn()) {
       if (currentUser.roles.indexOf(role) > -1) {
         return true;
       }
     }
     return false;
-  };
+  })};
 
   return authService;
 }])

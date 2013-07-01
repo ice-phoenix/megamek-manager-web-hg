@@ -7,6 +7,4 @@ angular.module('mmm', ['ui.bootstrap',
 .run([   'auth',
 function( auth ) {
 
-  auth.update();
-
 }]);

@@ -28,6 +28,4 @@ function( $rootScope,   $location,   auth,   notifications ) {
     notifications.addNext({type: 'error', msg: errMsg});
   });
 
-  auth.update();
-
 }]);
