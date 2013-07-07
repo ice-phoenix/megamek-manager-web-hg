@@ -57,12 +57,12 @@ angular.module('mmm.adminconfiglist', ['ui.bootstrap',
   /////////////////////////////////////////////////////////////////////////////
 
   var activeEdits = 0;
-  $scope.model.isSaveConfigDisabled = false;
+  $scope.model.isInEditMode = false;
 
   var $update = function() {
-    var isSaveConfigDisabled = activeEdits > 0;
-    if (isSaveConfigDisabled !== $scope.model.isSaveConfigDisabled) {
-      $scope.model.isSaveConfigDisabled = isSaveConfigDisabled;
+    var isInEditMode = activeEdits > 0;
+    if (isInEditMode !== $scope.model.isInEditMode) {
+      $scope.model.isInEditMode = isInEditMode;
     }
   };
 
