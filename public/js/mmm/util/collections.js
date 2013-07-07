@@ -50,4 +50,5 @@ angular.module('util.collections', [])
   };
 
   return collectionFactory;
-});
+
+}); // 'factory'

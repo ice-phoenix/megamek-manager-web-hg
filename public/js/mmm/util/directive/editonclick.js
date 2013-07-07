@@ -1,6 +1,7 @@
 angular.module('util.directive.editonclick', ['util.directive.onkeyup'])
 
 .directive('editOnClick', ['$parse', '$timeout', function($parse, $timeout) {
+
   return {
     restrict: 'E',
     replace: true,
@@ -8,37 +9,37 @@ angular.module('util.directive.editonclick', ['util.directive.onkeyup'])
     scope: true,
     template: '<div>' +
                 '<span ng-switch="model.isEditMode">' +
-                  '<input type="text" class="input-compact" ng-switch-when="false" ng-model="model.editValue" readonly ng-click="enterEditMode($event)"></input>' +
-                  '<input type="text" class="input-compact" ng-switch-when="true"  ng-model="model.editValue"          on-key-up="exitEditMode($event)"></input>' +
+                  '<input type="text" class="input-compact" ng-switch-when="false" ng-model="model.editValue" readonly ng-click="ctrl.enterEditMode($event)"></input>' +
+                  '<input type="text" class="input-compact" ng-switch-when="true"  ng-model="model.editValue"          on-key-up="ctrl.exitEditMode($event)"></input>' +
                 '</span>' +
               '</div>',
+
     link: function(scope, element, attrs) {
 
+      var $parent = scope.$parent;
+
       scope.model = {};
+      scope.ctrl = {};
 
       // Callbacks to our user
       var $valueGetter = $parse(attrs.value);
       var $valueSetter = $valueGetter.assign || angular.noop;
 
       var $onEditOnCallback = $parse(attrs.onEditOn);
-      var $onEditOn = function() {
-        $onEditOnCallback(scope);
-      };
+      var $onEditOn = function() { $onEditOnCallback($parent); };
       var $onEditOffCallback = $parse(attrs.onEditOff);
-      var $onEditOff = function() {
-        $onEditOffCallback(scope);
-      };
+      var $onEditOff = function() { $onEditOffCallback($parent); };
 
       // Helper functions
-      var getValue = function() {
-        var value = $valueGetter(scope);
+      var loadValue = function() {
+        var value = $valueGetter($parent);
         scope.model.undo = value;
         scope.model.editValue = value;
       };
-      var setValue = function() {
+      var saveValue = function() {
         var newValue = scope.model.editValue;
         scope.model.undo = newValue;
-        $valueSetter(scope, newValue);
+        $valueSetter($parent, newValue);
       };
       var revertValue = function() {
         scope.model.editValue = scope.model.undo;
@@ -54,28 +55,31 @@ angular.module('util.directive.editonclick', ['util.directive.onkeyup'])
       };
 
       // Controller functions
-      scope.enterEditMode = function(event) {
+      scope.ctrl.enterEditMode = function(event) {
         editOn();
-        getValue();
+        loadValue();
         $timeout(function() { element.find('input').focus(); }, 0);
       };
 
-      scope.exitEditMode = function(event) {
+      scope.ctrl.exitEditMode = function(event) {
         switch (event.which) {
-          case 13:
+          case 13: // Enter
             editOff();
-            setValue();
+            saveValue();
             break;
-          case 27:
+          case 27: // ESC
             editOff();
             revertValue();
             break;
         }
       };
 
-      // Init
+      // Init data model
       scope.model.isEditMode = false;
-      getValue();
-    }
+      loadValue();
+
+    } // link
+
   }; // return
-}]);
+
+}]); // 'directive'

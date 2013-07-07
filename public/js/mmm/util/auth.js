@@ -2,88 +2,108 @@ angular.module('util.auth', ['mmm.rest.whoami',
                              'util.notifications'])
 
 .controller('AuthNavCtrl', ['$scope', 'auth', function($scope, auth) {
-  $scope.logout = function() {
+
+  $scope.model = {};
+  $scope.ctrl = {};
+
+  $scope.ctrl.logout = function() {
     auth.logout();
   };
 
-  $scope.isLoggedIn = auth.isLoggedIn();
-  $scope.username = auth.username();
+  var $update = function() {
+    auth.isLoggedIn().then(function(result) {
+      $scope.model.isLoggedIn = result;
+    });
+    auth.username().then(function(result) {
+      $scope.model.username = result;
+    });
+  };
 
-  $scope.$on('auth.userChanged', function(event, oldUser, newUser) {
-    $scope.isLoggedIn = auth.isLoggedIn();
-    $scope.username = auth.username();
-  });
-}])
+  $scope.$on('auth.userChanged', $update);
 
-.factory('auth', ['$rootScope', '$location', '$http', 'notifications', 'WhoAmI',
-         function( $rootScope,   $location,   $http,   notifications,   WhoAmI ) {
+  $update();
+
+}]) // 'controller'
+
+.factory('auth', ['$rootScope', '$http', '$location', '$q', 'WhoAmI', 'notifications',
+         function( $rootScope,   $http,   $location,   $q,   WhoAmI,   notifications ) {
 
   var authService = {};
   var currentUser = undefined;
 
-  authService.changeUser = function(user) {
+  var $changeUser = function(newUser) {
     var oldUser = currentUser;
-    var newUser = user;
 
     if (oldUser !== newUser) {
-      currentUser = user;
+      currentUser = newUser;
       $rootScope.$broadcast('auth.userChanged', oldUser, newUser);
     }
   };
 
   authService.login = function(user) {
-    authService.changeUser(user);
+    $changeUser(user);
   };
 
   authService.logout = function() {
     $http.post('/logout')
     .success(function(data, status, headers, config) {
-      authService.changeUser(null);
+      $changeUser(null);
     })
     .error(function(data, status, headers, config) {
-      notifications.addCurrent({type: 'error', msg: 'Logout failed'});
+      notifications.addCurrentMsg('error', 'Logout failed');
     });
   };
 
-  authService.update = function(callback) {
+  var $update = function(callback, args) {
+    var deferred = $q.defer();
+
     if (angular.isUndefined(currentUser)) {
-      return WhoAmI.get(
+      WhoAmI.get(
         {},
         function(json) {
-          var user = WhoAmI.transform(json);
+          var user = WhoAmI.in(json);
           authService.login(user);
-          return callback();
+          deferred.resolve(callback.apply(null, args));
         },
-        $rootScope.$restDefaultErrorHandler
+        function(error) {
+          deferred.reject(error.data.msg || 'Unknown error');
+          $rootScope.$restDefaultErrorHandler(error);
+        }
       );
     } else {
-      return callback();
+      deferred.resolve(callback.apply(null, args));
     }
+
+    return deferred.promise;
   };
 
-  authService.isLoggedIn = function() { return authService.update(function() {
+  var $isLoggedIn = function() {
     return !!currentUser;
-  })};
+  };
+  authService.isLoggedIn = function() { return $update($isLoggedIn); };
 
-  authService.username = function() { return authService.update(function() {
-    if (authService.isLoggedIn()) {
-      return currentUser.firstName + " " + currentUser.lastName;
+  var $username = function() {
+    if ($isLoggedIn()) {
+      return currentUser.fullName;
     } else {
       return null;
     }
-  })};
+  };
+  authService.username = function() { return $update($username); };
 
-  authService.hasRole = function(role) { return authService.update(function() {
-    if (authService.isLoggedIn()) {
+  var $hasRole = function(role) {
+    if ($isLoggedIn()) {
       if (currentUser.roles.indexOf(role) > -1) {
         return true;
       }
     }
     return false;
-  })};
+  };
+  authService.hasRole = function(role) { return $update($hasRole, [role])};
 
   return authService;
-}])
+
+}]) // 'factory'
 
 .provider('authDefer', {
 
@@ -98,12 +118,14 @@ angular.module('util.auth', ['mmm.rest.whoami',
 
     authDeferService.requiredRole = function(role) {
       var deferred = $q.defer();
-      if (auth.hasRole(role)) deferred.resolve(true);
-      else deferred.reject(['Required role:', role].join(' '));
+      auth.hasRole(role).then(function(result) {
+        if (result) deferred.resolve(true);
+        else deferred.reject(['Required role:', role].join(' '));
+      });
       return deferred.promise;
     };
 
     return authDeferService;
   }]
 
-});
+}); // 'provider'

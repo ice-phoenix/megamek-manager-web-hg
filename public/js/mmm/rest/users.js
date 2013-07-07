@@ -1,21 +1,14 @@
-angular.module('mmm.rest.users', ['ngResource'])
+angular.module('mmm.rest.users', ['ngResource',
+                                  'util.restutils'])
 
-.factory('Users', ['$resource', function($resource) {
+.factory('Users', ['$resource', 'restUtils', function($resource, restUtils) {
+
   var Users = $resource(
-    '/api/users/:id'
+    '/api/admin/users/:id'
   );
 
-  Users._transform = function(srv) {
-    return srv;
-  };
-
-  Users.transform = function(json) {
-    if (angular.isArray(json)) {
-      return json.map(Users._transform);
-    } else {
-      return Users._transform(json);
-    }
-  };
+  restUtils.attachInOut(Users);
 
   return Users;
-}]);
+
+}]); // 'factory'

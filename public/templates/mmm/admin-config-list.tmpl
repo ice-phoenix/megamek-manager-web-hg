@@ -1,8 +1,8 @@
 <div class="row-fluid">
 
   <div class="input-append pull-right">
-    <input class="search-query" type="text" placeholder="search by id..." ng-model="searchId">
-    <a class="close" ng-click="clearSearchId()">&times;</a>
+    <input class="search-query" type="text" placeholder="search by id..." ng-model="model.searchId">
+    <a class="close" ng-click="ctrl.clearSearchId()">&times;</a>
   </div>
 
   <table class="table table-striped table-bordered">
@@ -14,22 +14,22 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="key in config.$keys | filter:searchId">
+    <tr ng-repeat="key in model.config.$keys | filter:model.searchId">
       <td style="width: 40%">
-        {{key}}
+        {{ key }}
       </td>
       <td style="width: 40%">
-        <edit-on-click value="config[key].value" on-edit-on="onEditOn()" on-edit-off="onEditOff()"></edit-on-click>
+        <edit-on-click value="model.config[key].value" on-edit-on="ctrl.onEditOn()" on-edit-off="ctrl.onEditOff()"></edit-on-click>
       </td>
       <td style="width: 20%">
-        {{config[key].type}}
+        {{ model.config[key].type }}
       </td>
     </tr>
     </tbody>
   </table>
 
   <div class="pull-right">
-    <a class="btn" type="button" ng-disabled="isSaveConfigDisabled()" ng-click="saveConfig()">Save config</a>
+    <a class="btn" type="button" ng-disabled="model.isSaveConfigDisabled" ng-click="ctrl.saveConfig()">Save config</a>
   </div>
 
 </div>

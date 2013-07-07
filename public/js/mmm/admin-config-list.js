@@ -1,10 +1,9 @@
 angular.module('mmm.adminconfiglist', ['ui.bootstrap',
                                        'mmm.rest.admin.config',
                                        'util.auth',
+                                       'util.collections',
                                        'util.directive.editonclick',
-                                       'util.notifications',
-                                       'util.modals',
-                                       'util.collections'])
+                                       'util.notifications'])
 
 .config(['$routeProvider', 'authDeferProvider', function($routeProvider, authDeferProvider) {
   $routeProvider
@@ -14,70 +13,81 @@ angular.module('mmm.adminconfiglist', ['ui.bootstrap',
       resolve: {
         requiredRole: authDeferProvider.requiredRole('Admin')
       }
-    })
-}])
+    });
+}]) // 'config'
 
-.controller('AdminConfigListCtrl', ['$scope', 'AdminConfig', 'notifications', 'modals', 'collections',
-                           function( $scope,   AdminConfig,   notifications,   modals,   collections ) {
+.controller('AdminConfigListCtrl', ['$scope', 'AdminConfig', 'collections', 'notifications',
+                           function( $scope,   AdminConfig,   collections,   notifications ) {
+
+  $scope.model = {};
+  $scope.ctrl = {};
 
   /////////////////////////////////////////////////////////////////////////////
   // JSON REST API
   /////////////////////////////////////////////////////////////////////////////
 
-  $scope.getConfig = function() {
+  var $loadConfig = function() {
     AdminConfig.get(
       {},
       function(json) {
-        $scope.config = AdminConfig.transform(json);
+        $scope.model.config = AdminConfig.in(json);
       },
       $scope.$restDefaultErrorHandler
     );
   };
 
-  $scope.saveConfig = function() {
+  $scope.ctrl.saveConfig = function() {
     AdminConfig.put(
-      AdminConfig.untransform($scope.config),
+      AdminConfig.out($scope.model.config),
       function(json) {
-        var newConfig = AdminConfig.transform(json);
-        AdminConfig.merge($scope.config, newConfig);
+        var newConfig = AdminConfig.in(json);
+        AdminConfig.merge($scope.model.config, newConfig);
       },
       function(error) {
         var changed = error.data.changed || {};
-        var newConfig = AdminConfig.transform(changed);
-        AdminConfig.merge($scope.config, newConfig);
+        var newConfig = AdminConfig.in(changed);
+        AdminConfig.merge($scope.model.config, newConfig);
         $scope.$restDefaultErrorHandler(error);
       }
     );
-  }
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // Editing
   /////////////////////////////////////////////////////////////////////////////
 
-  $scope.onEditOn = function() {
-    $scope.activeEdits = $scope.activeEdits + 1;
+  var activeEdits = 0;
+  $scope.model.isSaveConfigDisabled = false;
+
+  var $update = function() {
+    var isSaveConfigDisabled = activeEdits > 0;
+    if (isSaveConfigDisabled !== $scope.model.isSaveConfigDisabled) {
+      $scope.model.isSaveConfigDisabled = isSaveConfigDisabled;
+    }
   };
 
-  $scope.onEditOff = function() {
-    $scope.activeEdits = $scope.activeEdits - 1;
+  $scope.ctrl.onEditOn = function() {
+    activeEdits = activeEdits + 1;
+    $update();
   };
 
-  $scope.isSaveConfigDisabled = function() {
-    return $scope.activeEdits > 0;
+  $scope.ctrl.onEditOff = function() {
+    activeEdits = activeEdits - 1;
+    $update();
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // Filtering
   /////////////////////////////////////////////////////////////////////////////
 
-  $scope.clearSearchId = function() {
-    $scope.searchId = '';
+  $scope.ctrl.clearSearchId = function() {
+    $scope.model.searchId = '';
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // Init
   /////////////////////////////////////////////////////////////////////////////
 
-  $scope.activeEdits = 0;
-  $scope.getConfig();
+  $loadConfig();
+
 }]);

@@ -2,16 +2,14 @@ angular.module('util.modals', ['ui.bootstrap'])
 
 .controller('ModalMessageBoxCtrl', ['$scope', 'dialog', 'model', function($scope, dialog, model) {
 
-  $scope.title = model.title;
-  $scope.msg = model.msg;
-  $scope.warn = model.warn;
-  $scope.buttons = model.buttons;
+  $scope.model = model;
+  $scope.ctrl = {};
 
-  $scope.close = function(result) {
+  $scope.ctrl.close = function(result) {
     dialog.close(result);
   };
 
-}])
+}]) // 'controller'
 
 .factory('modals', ['$dialog', function($dialog) {
 
@@ -19,21 +17,21 @@ angular.module('util.modals', ['ui.bootstrap'])
 
   modals.confirm = function(title, msg, warn, buttons) {
     return $dialog.dialog({
-        templateUrl: '/assets/templates/mmm/util/modal-message-box.tmpl',
-        controller: 'ModalMessageBoxCtrl',
-        resolve: {
-          model: function() {
-            return {
-              title: title,
-              msg: msg,
-              warn: warn,
-              buttons: buttons
-            };
-          }
+      templateUrl: '/assets/templates/mmm/util/modal-message-box.tmpl',
+      controller: 'ModalMessageBoxCtrl',
+      resolve: {
+        model: function() {
+          return {
+            title: title,
+            msg: msg,
+            warn: warn,
+            buttons: buttons
+          };
         }
-      });
+      }
+    });
   };
 
   return modals;
 
-}]);
+}]); // 'factory'

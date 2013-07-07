@@ -8,5 +8,5 @@ angular.module('mmm.adminpanel', ['ui.bootstrap',
       resolve: {
         requiredRole: authDeferProvider.requiredRole('Admin')
       }
-    })
-}]);
+    });
+}]); // 'config'

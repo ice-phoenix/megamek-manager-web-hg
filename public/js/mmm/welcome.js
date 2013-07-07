@@ -4,6 +4,7 @@ angular.module('mmm.welcome', [])
 
   $routeProvider
     .when('/',
-          { templateUrl: '/assets/templates/mmm/welcome.tmpl' });
+      { templateUrl: '/assets/templates/mmm/welcome.tmpl' }
+    );
 
-}]);
+}]); // 'config'

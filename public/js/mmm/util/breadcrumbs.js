@@ -1,14 +1,19 @@
 angular.module('util.breadcrumbs', [])
 
 .controller('BreadcrumbsNavCtrl', ['$scope', 'breadcrumbs', function($scope, breadcrumbs) {
-  $scope.breadcrumbs = breadcrumbs;
 
-  $scope.getBreadcrumbCls = function(b) {
+  $scope.model = {};
+  $scope.ctrl = {};
+
+  $scope.model.breadcrumbs = breadcrumbs;
+
+  $scope.ctrl.getBreadcrumbCls = function(b) {
     var bs = breadcrumbs.getAll();
     if (b === bs[bs.length-1]) return 'active';
     else return '';
   };
-}])
+
+}]) // 'controller'
 
 .factory('breadcrumbs', ['$rootScope', '$location', function($rootScope, $location) {
 
@@ -34,4 +39,5 @@ angular.module('util.breadcrumbs', [])
   };
 
   return breadcrumbsService;
-}]);
+
+}]); // 'factory'

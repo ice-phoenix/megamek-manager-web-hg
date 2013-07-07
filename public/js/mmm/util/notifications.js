@@ -1,12 +1,17 @@
 angular.module('util.notifications', [])
 
 .controller('NotificationListCtrl', ['$scope', 'notifications', function($scope, notifications) {
-  $scope.notifications = notifications;
 
-  $scope.getNotificationCls = function(what) {
+  $scope.model = {};
+  $scope.ctrl = {};
+
+  $scope.model.notifications = notifications;
+
+  $scope.ctrl.getNotificationCls = function(what) {
     return 'alert alert-compact alert-' + what.type;
   };
-}])
+
+}]) // 'controller'
 
 .factory('notifications', ['$rootScope', function($rootScope) {
 
@@ -19,9 +24,7 @@ angular.module('util.notifications', [])
   var notificationService = {};
 
   var addNotification = function(notifications, what) {
-    if (!angular.isObject(what)) throw new Error('Notifications must be objects');
     notifications.push(what);
-    return what;
   };
 
   $rootScope.$on('$routeChangeSuccess', function() {
@@ -34,16 +37,19 @@ angular.module('util.notifications', [])
     return [].concat(notifications.STICKY, notifications.CURRENT);
   };
 
-  notificationService.addSticky = function(notification) {
-    return addNotification(notifications.STICKY, notification);
+  notificationService.addStickyMsg = function(type, msg) {
+    var n = { type: type, msg: msg };
+    addNotification(notifications.STICKY, n);
   };
 
-  notificationService.addCurrent = function(notification) {
-    return addNotification(notifications.CURRENT, notification);
+  notificationService.addCurrentMsg = function(type, msg) {
+    var n = { type: type, msg: msg };
+    addNotification(notifications.CURRENT, n);
   };
 
-  notificationService.addNext = function(notification) {
-    return addNotification(notifications.NEXT, notification);
+  notificationService.addNextMsg = function(type, msg) {
+    var n = { type: type, msg: msg };
+    addNotification(notifications.NEXT, n);
   };
 
   notificationService.remove = function(notification) {
@@ -66,4 +72,5 @@ angular.module('util.notifications', [])
   };
 
   return notificationService;
-}]);
+
+}]); // 'factory'

@@ -1,6 +1,7 @@
-angular.module('mmm.rest.whoami', ['ngResource'])
+angular.module('mmm.rest.whoami', ['ngResource',
+                                   'util.restutils'])
 
-.factory('WhoAmI', ['$resource', function($resource) {
+.factory('WhoAmI', ['$resource', 'restUtils', function($resource, restUtils) {
   var WhoAmI = $resource(
     '/api/whoami'
   );
@@ -9,18 +10,13 @@ angular.module('mmm.rest.whoami', ['ngResource'])
     return angular.equals(arr, ['n', 'u', 'l', 'l']);
   };
 
-  WhoAmI._transform = function(srv) {
-    if (isNull(srv)) return null;
-    else return srv;
+  var $in = function(user) {
+    if (isNull(user)) return null;
+    else return user;
   };
 
-  WhoAmI.transform = function(json) {
-    if (angular.isArray(json)) {
-      return json.map(WhoAmI._transform);
-    } else {
-      return WhoAmI._transform(json);
-    }
-  };
+  restUtils.attachInOut(WhoAmI, $in);
 
   return WhoAmI;
-}]);
+
+}]); // 'factory'

@@ -1,18 +1,17 @@
-<div class="row-fluid" ng-init="
-    adminConfigIsCollapsed=true
-">
+<div class="row-fluid">
   <ul class="nav nav-pills nav-stacked">
 
-    <li class="" active-on-role="User">
+    <li active-on-role="User">
       <a href="/#/servers">View servers</a>
     </li>
 
-    <li class="" ng-mouseenter="adminConfigIsCollapsed=false" ng-mouseleave="adminConfigIsCollapsed=true" active-on-role="Admin">
+    <li ng-mouseenter="ctrl.showAdmin()" ng-mouseleave="ctrl.hideAdmin()" ng-controller="NavMenuCtrl" active-on-role="Admin">
+
       <a href="/#/admin">
         Admin panel<i class="icon-chevron-down pull-right"></i>
       </a>
 
-      <div collapse="adminConfigIsCollapsed">
+      <div collapse="model.adminIsCollapsed">
         <ul class="nav nav-list">
           <li class=""><a href="/#/admin/config">
             <small>Config</small>
@@ -21,5 +20,6 @@
       </div>
 
     </li>
+
   </ul>
 </div>

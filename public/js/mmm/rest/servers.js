@@ -1,6 +1,8 @@
-angular.module('mmm.rest.servers', ['ngResource'])
+angular.module('mmm.rest.servers', ['ngResource',
+                                    'util.restutils'])
 
-.factory('Servers', ['$resource', function($resource) {
+.factory('Servers', ['$resource', 'restUtils', function($resource, restUtils) {
+
   var Servers = $resource(
     '/api/servers/:port',
     {},
@@ -9,7 +11,7 @@ angular.module('mmm.rest.servers', ['ngResource'])
     }
   );
 
-  Servers._transform = function(srv) {
+  var $in = function(srv) {
     var res = {};
     res.port = srv.port || 0;
     res.players = srv.players || [];
@@ -23,13 +25,8 @@ angular.module('mmm.rest.servers', ['ngResource'])
     return res;
   };
 
-  Servers.transform = function(json) {
-    if (angular.isArray(json)) {
-      return json.map(Servers._transform);
-    } else {
-      return Servers._transform(json);
-    }
-  };
+  restUtils.attachInOut(Servers, $in);
 
   return Servers;
-}]);
+
+}]); // 'factory'

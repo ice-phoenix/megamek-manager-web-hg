@@ -1,6 +1,8 @@
-angular.module('mmm.rest.admin.config', ['ngResource'])
+angular.module('mmm.rest.admin.config', ['ngResource',
+                                         'util.restutils'])
 
-.factory('AdminConfig', ['$resource', function($resource) {
+.factory('AdminConfig', ['$resource', 'restUtils', function($resource, restUtils) {
+
   var AdminConfig = $resource(
     '/api/admin/config',
     {},
@@ -9,51 +11,33 @@ angular.module('mmm.rest.admin.config', ['ngResource'])
     }
   );
 
-  AdminConfig._keyify = function(e) {
+  var $keyify = function(e) {
     var keys = [];
     for (var key in e) {
       if (e.hasOwnProperty(key) && key.lastIndexOf('$', 0) === -1) {
         keys.push(key);
       }
     }
-
     e.$keys = keys;
     return e;
   }
 
-  AdminConfig._transform = function(cfg) {
-    var res = angular.copy(cfg);
-    res = AdminConfig._keyify(res);
-    return res;
+  var $in = function(cfg) {
+    return $keyify(angular.copy(cfg));
   };
 
-  AdminConfig._untransform = function(cfg) {
+  var $out = function(cfg) {
     var res = angular.copy(cfg);
     delete res.$keys;
     return res;
   };
 
+  restUtils.attachInOut(AdminConfig, $in, $out);
+
   AdminConfig.merge = function(dst, src) {
-    var res = angular.extend(dst, src);
-    res = AdminConfig._keyify(dst);
-    return res;
+    return $keyify(angular.extend(dst, src));
   }
 
-  AdminConfig.transform = function(json) {
-    if (angular.isArray(json)) {
-      return json.map(AdminConfig._transform);
-    } else {
-      return AdminConfig._transform(json);
-    }
-  };
-
-  AdminConfig.untransform = function(data) {
-    if (angular.isArray(data)) {
-      return data.map(AdminConfig._untransform);
-    } else {
-      return AdminConfig._untransform(data);
-    }
-  };
-
   return AdminConfig;
-}]);
+
+}]); // 'factory'

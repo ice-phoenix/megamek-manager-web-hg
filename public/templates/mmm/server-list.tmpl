@@ -3,14 +3,14 @@
   <table class="table table-striped table-bordered">
     <thead>
     <tr>
-      <th><a ng-click="toggleSortBy('port')">
-        Port<i ng-class="getSortByCls('port')"></i>
+      <th><a ng-click="ctrl.toggleSortBy('port')">
+        Port<i ng-class="ctrl.getSortByCls('port')"></i>
       </a></th>
-      <th><a ng-click="toggleSortBy('players')">
-        Players<i ng-class="getSortByCls('players')"></i>
+      <th><a ng-click="ctrl.toggleSortBy('players')">
+        Players<i ng-class="ctrl.getSortByCls('players')"></i>
       </a></th>
-      <th><a ng-click="toggleSortBy('status')">
-        Status<i ng-class="getSortByCls('status')"></i>
+      <th><a ng-click="ctrl.toggleSortBy('status')">
+        Status<i ng-class="ctrl.getSortByCls('status')"></i>
       </a></th>
       <th>
         Action
@@ -18,20 +18,20 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-class="servers.get(id).statusCls" ng-repeat="id in servers.ids | orderBy:getSortByKey:sortByReversed">
-      <td>{{servers.get(id).port}}</td>
-      <td>{{servers.get(id).players.join(', ')}}</td>
-      <td>{{servers.get(id).status}}</td>
+    <tr ng-class="model.servers.get(id).statusCls" ng-repeat="id in model.servers.ids | orderBy:ctrl.getSortByKey:model.sortByReversed">
+      <td>{{ model.servers.get(id).port }}</td>
+      <td>{{ model.servers.get(id).players.join(', ') }}</td>
+      <td>{{ model.servers.get(id).status }}</td>
       <td><span active-on-role="Admin">
-        <a class="close danger" ng-click="stopServerWithConfirm(id)">&times;</a>
+        <a class="close danger" ng-click="ctrl.stopServerWithConfirm(id)">&times;</a>
       </span></td>
     </tr>
     </tbody>
   </table>
 
   <div class="input-append pull-right" active-on-role="Admin">
-    <a class="btn" ng-click="startServer()">Start server on</a>
-    <input class="input-mini" type="number" ng-model="startServerPort">
+    <a class="btn" ng-click="ctrl.startServer()">Start server on</a>
+    <input class="input-mini" type="number" ng-model="model.startServerPort">
   </div>
 
 </div>

@@ -2,9 +2,9 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
                                   'mmm.rest.servers',
                                   'util.auth',
                                   'util.directive.activeonrole',
-                                  'util.notifications',
+                                  'util.collections',
                                   'util.modals',
-                                  'util.collections'])
+                                  'util.notifications'])
 
 .config(['$routeProvider', 'authDeferProvider', function($routeProvider, authDeferProvider) {
   $routeProvider
@@ -14,60 +14,63 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
       resolve: {
         requiredRole: authDeferProvider.requiredRole('User')
       }
-    })
-}])
+    });
+}]) // 'config'
 
-.controller('ServerListCtrl', ['$scope', 'Servers', 'notifications', 'modals', 'collections',
-                      function( $scope,   Servers,   notifications,   modals,   collections ) {
+.controller('ServerListCtrl', ['$scope', 'Servers', 'collections', 'modals', 'notifications',
+                      function( $scope,   Servers,   collections,   modals,   notifications ) {
 
-  $scope.servers = collections.lut(function(e) { return e.port; });
+  $scope.model = {};
+  $scope.ctrl = {};
+
+  $scope.model.servers = collections.lut(function(e) { return e.port; });
 
   /////////////////////////////////////////////////////////////////////////////
   // JSON REST API
   /////////////////////////////////////////////////////////////////////////////
 
-  $scope.queryServers = function() {
+  var $loadServers = function() {
     Servers.query(
       {},
       function(json) {
-        $scope.servers.clear();
-        angular.forEach(Servers.transform(json), function(e) {
-          $scope.servers.add(e);
+        $scope.model.servers.clear();
+        angular.forEach(Servers.in(json), function(e) {
+          $scope.model.servers.add(e);
         });
       },
       $scope.$restDefaultErrorHandler
     );
   };
 
-  $scope.startServer = function(port) {
-    if (angular.isUndefined(port)) port = $scope.startServerPort;
+  $scope.ctrl.startServer = function(port) {
+    if (angular.isUndefined(port)) port = $scope.model.startServerPort;
     Servers.put(
       {port: port},
       function(json) {
-        $scope.servers.add(Servers.transform(json));
-        notifications.addCurrent({type: 'success', msg: ['Started server on port', port].join(' ')});
+        $scope.model.servers.add(Servers.in(json));
+        notifications.addCurrentMsg('success', ['Started server on port', port].join(' '));
       },
       $scope.$restDefaultErrorHandler
     );
   };
 
-  $scope.stopServer = function(port) {
+  $scope.ctrl.stopServer = function(port) {
     Servers.remove(
       {port: port},
       function(json) {
-        $scope.servers.remove(port);
-        notifications.addCurrent({type: 'success', msg: ['Stopped server on port', port].join(' ')});
+        $scope.model.servers.remove(port);
+        notifications.addCurrentMsg('success', ['Stopped server on port', port].join(' '));
       },
       $scope.$restDefaultErrorHandler
     );
-  }
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // Dialogs
   /////////////////////////////////////////////////////////////////////////////
 
-  $scope.stopServerWithConfirm = function(port) {
-    var e = $scope.servers.get(port);
+  $scope.ctrl.stopServerWithConfirm = function(port) {
+    var e = $scope.model.servers.get(port);
 
     var title = 'Stop server';
     var msg = ['Stop server on port ', port, '?'].join('');
@@ -80,7 +83,7 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
     var confirm = modals.confirm(title, msg, warn, buttons);
 
     confirm.open().then(function(result) {
-        if (result === true) $scope.stopServer(port);
+      if (result) $scope.ctrl.stopServer(port);
     });
   };
 
@@ -88,26 +91,30 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
   // Sorting
   /////////////////////////////////////////////////////////////////////////////
 
-  $scope.toggleSortBy = function(sortBy) {
-    $scope.sortByReversed = (sortBy === $scope.sortBy ? !$scope.sortByReversed : false);
-    $scope.sortBy = sortBy;
-  }
+  $scope.ctrl.toggleSortBy = function(sortBy) {
+    if (sortBy !== $scope.model.sortBy) {
+      $scope.model.sortByReversed = false;
+      $scope.model.sortBy = sortBy;
+    } else {
+      $scope.model.sortByReversed = !$scope.model.sortByReversed;
+    }
+  };
 
-  $scope.getSortByCls = function(sortBy) {
-    if (sortBy === $scope.sortBy) {
-      if ($scope.sortByReversed) {
-        return "icon-arrow-up";
+  $scope.ctrl.getSortByCls = function(sortBy) {
+    if (sortBy === $scope.model.sortBy) {
+      if ($scope.model.sortByReversed) {
+        return 'icon-arrow-up';
       } else {
-        return "icon-arrow-down";
+        return 'icon-arrow-down';
       }
     } else {
       return "icon-";
     }
-  }
+  };
 
-  $scope.getSortByKey = function(id) {
-    var e = $scope.servers.get(id);
-    switch ($scope.sortBy) {
+  $scope.ctrl.getSortByKey = function(id) {
+    var e = $scope.model.servers.get(id);
+    switch ($scope.model.sortBy) {
       case 'port': return e.port;
       case 'players': return e.players.length;
       case 'status': return e.status;
@@ -119,9 +126,10 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
   // Init
   /////////////////////////////////////////////////////////////////////////////
 
-  $scope.startServerPort = 2345;
-  $scope.sortBy = 'players';
-  $scope.sortByReversed = true;
+  $scope.model.startServerPort = 2345;
+  $scope.model.sortBy = 'port';
+  $scope.model.sortByReversed = false;
 
-  $scope.queryServers();
-}]);
+  $loadServers();
+
+}]); // 'controller'
