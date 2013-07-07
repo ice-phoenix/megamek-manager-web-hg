@@ -26,7 +26,7 @@
   }
 
 
-  @defining( Registry.providers.all.values.filter{ _.id != UsernamePassword } ) { externalProviders =>
+  @defining( Registry.providers.all.values.filter { _.id != UsernamePassword } ) { externalProviders =>
 
     @if( externalProviders.size > 0 ) {
       <div class="clearfix">
@@ -50,6 +50,6 @@
       </div>
     }
 
-  }
+  } @* End of @defining... *@
 
 }

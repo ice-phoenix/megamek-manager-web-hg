@@ -1,14 +1,14 @@
 package controllers.mmm.admin
 
-import play.api.libs.json.{Json, JsObject, JsError, JsSuccess, JsString}
+import play.api.libs.json.{Json, JsError, JsSuccess, JsObject, JsString}
 import play.api.mvc._
 import scala.util.Failure
-import util.MmmJsonifier._
 import util._
 
 object Config
   extends Controller {
 
+  import util.MmmJsonifier._
   import util.config.ConfigManager.{Instance => CMI}
 
   def jsonMap(m: Map[String, Any]): JsObject = {

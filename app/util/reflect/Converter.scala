@@ -9,17 +9,19 @@ trait Converter[T] {
 
   val wrappers: Map[ru.Type, Function[T, Any]]
 
-  def defaultWrap(v: T, wType: ru.Type)(implicit tag: ru.TypeTag[T]): Any = {
+  def defaultWrap(v: T, wType: ru.Type)(implicit vTag: ru.TypeTag[T]): Any = {
     val wClassMirror = typeMirror.reflectClass(wType.typeSymbol.asClass)
+
+    val vType = ru.typeOf[T]
 
     wType.declaration(ru.nme.CONSTRUCTOR).asTerm.alternatives.collect {
       case s if s.isMethod => s.asMethod
     }.collectFirst {
-      case m if m.paramss.exists(p => p.length == 1 && ru.typeOf[T] <:< p.head.typeSignature) => m
+      case m if m.paramss.exists { p => p.length == 1 && vType <:< p.head.typeSignature } => m
     }.map {
       ctor => wClassMirror.reflectConstructor(ctor).apply(v)
     }.getOrElse {
-      val vTypeName = ru.typeOf[T].typeSymbol.name.toString.trim
+      val vTypeName = vType.typeSymbol.name.toString.trim
       val wTypeName = wType.typeSymbol.name.toString.trim
       throw new NoSuchMethodException(
         s"Cannot wrap '$v' as '$vTypeName' -> '$wTypeName'"
@@ -27,7 +29,7 @@ trait Converter[T] {
     }
   }
 
-  def wrap(v: T, wType: ru.Type)(implicit tag: ru.TypeTag[T]): Try[Any] = {
+  def wrap(v: T, wType: ru.Type)(implicit vTag: ru.TypeTag[T]): Try[Any] = {
     wrappers.get(wType).map {
       w => Try { w(v) }
     }.getOrElse {

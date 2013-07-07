@@ -34,7 +34,9 @@ class MmmTokenParser(prefix: String = "") {
 
 object MmmTokenParser {
 
-  def apply() = new MmmTokenParser("Token.").It
+  val default = new MmmTokenParser("Token.")
+
+  def apply() = default.It
 
   def apply(prefix: String) = new MmmTokenParser(prefix).It
 

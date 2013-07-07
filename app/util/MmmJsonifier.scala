@@ -1,6 +1,5 @@
 package util
 
-import BetterStringOps.Implicits._
 import db.model.MmmIdentity
 import db.model.basic.MmmRole
 import info.icephoenix.mmm.data._
@@ -10,6 +9,9 @@ import play.api.libs.json._
 import scala.reflect.runtime.{universe => ru}
 
 object MmmJsonifier {
+
+  import BetterJson.Implicits._
+  import BetterStringOps.Implicits._
 
   object BetterJson {
 
@@ -29,8 +31,6 @@ object MmmJsonifier {
     }
 
   }
-
-  import BetterJson.Implicits._
 
   val TypedAnyWrites: Writes[Any] =
     ((__ \ 'value).write[String] ~ (__ \ 'type).write[String]) {
@@ -63,7 +63,7 @@ object MmmJsonifier {
 
   implicit val AllServerStatusWrites = new Writes[AllServerStatus] {
     def writes(v: AllServerStatus) = {
-      Json.toJson(v.status.map(s => Json.toJson(s)))
+      Json.toJson(v.status.map { s => Json.toJson(s) })
     }
   }
 

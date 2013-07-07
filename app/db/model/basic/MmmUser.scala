@@ -45,7 +45,9 @@ class MmmUserParser(prefix: String = "") {
 
 object MmmUserParser {
 
-  def apply() = new MmmUserParser("User.").It
+  def default = new MmmUserParser("User.")
+
+  def apply() = default.It
 
   def apply(prefix: String) = new MmmUserParser(prefix).It
 

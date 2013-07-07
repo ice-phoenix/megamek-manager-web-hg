@@ -22,7 +22,7 @@ object Servers
   val defaultRecover: PartialFunction[Throwable, Result] = {
     case t: TimeoutException =>
       RequestTimeout(
-        JsonRestFailure("Server statistics timed out")
+        JsonRestFailure("Request timed out")
       )
     case e: Exception =>
       InternalServerError(

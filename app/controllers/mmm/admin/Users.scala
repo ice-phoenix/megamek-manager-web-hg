@@ -1,6 +1,6 @@
-package controllers.auth
+package controllers.mmm.admin
 
-import play.api.libs.json.{JsNull, Json}
+import play.api.libs.json.{Json, JsNull}
 import play.api.mvc._
 import securesocial.core.SecureSocial
 import util.{JsonRestFailure, JsonRestSuccess}

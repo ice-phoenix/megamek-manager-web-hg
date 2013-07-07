@@ -2,8 +2,8 @@ package controllers.customsecuresocial
 
 import play.api.Application
 import play.api.data.Form
-import play.api.mvc.{Request, RequestHeader}
-import play.api.templates.{Html, Txt}
+import play.api.mvc._
+import play.api.templates._
 import securesocial.controllers.PasswordChange.ChangeInfo
 import securesocial.controllers.Registration.RegistrationInfo
 import securesocial.controllers.TemplatesPlugin

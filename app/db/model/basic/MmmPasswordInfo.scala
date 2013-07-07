@@ -31,7 +31,9 @@ class MmmPasswordInfoParser(prefix: String = "") {
 
 object MmmPasswordInfoParser {
 
-  def apply() = new MmmPasswordInfoParser("PasswordInfo.").It
+  val default = new MmmPasswordInfoParser("PasswordInfo.")
+
+  def apply() = default.It
 
   def apply(prefix: String) = new MmmPasswordInfoParser(prefix).It
 

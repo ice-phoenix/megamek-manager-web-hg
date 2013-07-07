@@ -17,4 +17,5 @@ RUNNING_PID
 .settings
 
 db/*
+conf/crypto.conf
 conf/smtp.conf

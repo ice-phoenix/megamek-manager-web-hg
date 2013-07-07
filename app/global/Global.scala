@@ -11,9 +11,9 @@ object Global extends GlobalSettings {
   var mmm: MegamekManager = _
 
   override def onStart(app: Application) {
-    mmm = MegamekManager.create()
-
     CMI.load()
+
+    mmm = MegamekManager.create()
 
     CMI.Servers.Ports.foreach {
       port => mmm.RunnerSup ! StartServer(port, "")
@@ -21,9 +21,9 @@ object Global extends GlobalSettings {
   }
 
   override def onStop(app: Application) {
-    CMI.save()
-
     if (mmm != null) mmm.shutdown()
+
+    CMI.save()
   }
 
 }

@@ -21,7 +21,9 @@ class MmmRoleParser(prefix: String = "") {
 
 object MmmRoleParser {
 
-  def apply() = new MmmRoleParser("Role.").It
+  val default = new MmmRoleParser("Role.")
+
+  def apply() = default.It
 
   def apply(prefix: String) = new MmmRoleParser(prefix).It
 

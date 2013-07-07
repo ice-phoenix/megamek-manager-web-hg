@@ -21,8 +21,7 @@ object Clazzer {
         classOf[Double] -> classOf[jl.Double],
         classOf[Unit] -> classOf[jl.Void]
       )(clazz)
-    }
-    else clazz
+    } else clazz
   }
 
 }
