@@ -1,6 +1,7 @@
 angular.module('mmm', ['ui.bootstrap',
                        'mmm.adminconfiglist',
                        'mmm.adminpanel',
+                       'mmm.adminuserlist',
                        'mmm.serverlist',
                        'mmm.welcome',
                        'util.auth',

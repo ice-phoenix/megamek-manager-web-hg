@@ -1,0 +1,38 @@
+<div class="row-fluid">
+
+  <table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+      <th><a ng-click="ctrl.toggleSortBy('dbId')">
+        db id<i ng-class="ctrl.getSortByCls('dbId')"></i>
+      </a></th>
+      <th><a ng-click="ctrl.toggleSortBy('userId')">
+        user id<i ng-class="ctrl.getSortByCls('userId')"></i>
+      </a></th>
+      <th><a ng-click="ctrl.toggleSortBy('providerId')">
+        provider id<i ng-class="ctrl.getSortByCls('providerId')"></i>
+      </a></th>
+      <th><a ng-click="ctrl.toggleSortBy('email')">
+        email<i ng-class="ctrl.getSortByCls('email')"></i>
+      </a></th>
+      <th><a ng-click="ctrl.toggleSortBy('rolesStr')">
+        roles<i ng-class="ctrl.getSortByCls('rolesStr')"></i>
+      </a></th>
+      <th>
+        action
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="id in model.users.ids | orderBy:ctrl.getSortByKey:model.sortByReversed">
+      <td>{{ model.users.get(id).dbId }}</td>
+      <td>{{ model.users.get(id).userId }}</td>
+      <td>{{ model.users.get(id).providerId }}</td>
+      <td>{{ model.users.get(id).email }}</td>
+      <td>{{ model.users.get(id).rolesStr }}</td>
+      <td>...</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>

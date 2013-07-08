@@ -7,7 +7,13 @@ angular.module('mmm.rest.users', ['ngResource',
     '/api/admin/users/:id'
   );
 
-  restUtils.attachInOut(Users);
+  var $in = function(user) {
+    var res = angular.copy(user);
+    res.rolesStr = res.roles.map(function(r) { return r.name; }).join(' / ');
+    return res;
+  };
+
+  restUtils.attachInOut(Users, $in);
 
   return Users;
 
