@@ -41,4 +41,9 @@ object Users
     }
   }
 
+  def update(dbId: Long) = Action(parse.json) {
+    request =>
+      NotImplemented("Come back later...")
+  }
+
 }

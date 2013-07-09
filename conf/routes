@@ -21,6 +21,7 @@ PUT     /api/admin/config           controllers.mmm.admin.Config.set
 GET     /api/whoami                 controllers.mmm.admin.Users.whoAmI
 GET     /api/admin/users            controllers.mmm.admin.Users.query
 GET     /api/admin/users/:dbId      controllers.mmm.admin.Users.read(dbId: Long)
+PUT     /api/admin/users/:dbId      controllers.mmm.admin.Users.update(dbId: Long)
 
 ########################################################################################################################
 # SecureSocial

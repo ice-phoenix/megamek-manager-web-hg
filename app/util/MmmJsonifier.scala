@@ -1,7 +1,7 @@
 package util
 
 import db.model.MmmIdentity
-import db.model.basic.MmmRole
+import db.model.basic._
 import info.icephoenix.mmm.data._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Writes._
@@ -16,7 +16,7 @@ object MmmJsonifier {
   object BetterJson {
 
     def TypeTagger[T: ru.TypeTag]: Writes[JsValue] =
-      (__.write[JsValue] ~ (__ \ 'type).write[String]) {
+      ((__).write[JsValue] ~ (__ \ 'type).write[String]) {
         json: JsValue => (json, ru.typeOf[T].typeSymbol.name.toString.camelCaseToDashed())
       }
 
@@ -67,11 +67,11 @@ object MmmJsonifier {
     }
   }
 
-  implicit val MmmRoleWrites: Writes[MmmRole] =
-    ((__ \ 'dbId).write[Long] ~
-      (__ \ 'name).write[String]) {
-      r: MmmRole => (r.dbId, r.name)
-    }
+  implicit val MmmRoleFormat: Format[MmmRole] =
+    ((__ \ 'dbId).format[Long] ~
+      (__ \ 'name).format[String])(
+      MmmRole.apply _, unlift(MmmRole.unapply)
+    )
 
   val WhoAmIWrites: Writes[MmmIdentity] =
     ((__ \ 'firstName).write[String] ~
@@ -83,17 +83,27 @@ object MmmJsonifier {
       u: MmmIdentity => (u.firstName, u.lastName, u.fullName, u.email, u.avatarUrl, u.roles.map { _.name })
     }
 
-  implicit val MmmIdentityWrites: Writes[MmmIdentity] =
-    ((__ \ 'dbId).write[Long] ~
-      (__ \ 'userId).write[String] ~
-      (__ \ 'providerId).write[String] ~
-      (__ \ 'firstName).write[String] ~
-      (__ \ 'lastName).write[String] ~
-      (__ \ 'fullName).write[String] ~
-      (__ \ 'email).writeNullable[String] ~
-      (__ \ 'avatarUrl).writeNullable[String] ~
-      (__ \ 'roles).write[List[MmmRole]]) {
-      u: MmmIdentity => (u.dbId, u.id.id, u.id.providerId, u.firstName, u.lastName, u.fullName, u.email, u.avatarUrl, u.roles)
-    }
+  implicit val MmmUserFormat: Format[MmmUser] =
+    ((__ \ 'dbId).format[Long] ~
+      (__ \ 'userId).format[String] ~
+      (__ \ 'providerId).format[String] ~
+      (__ \ 'firstName).format[String] ~
+      (__ \ 'lastName).format[String] ~
+      (__ \ 'email).formatNullable[String] ~
+      (__ \ 'avatarUrl).formatNullable[String] ~
+      (__ \ 'authType).format[String])(
+      MmmUser.apply _, unlift(MmmUser.unapply)
+    )
+
+  implicit val MmmIdentityFormat: Format[MmmIdentity] =
+    ((__).format[MmmUser] ~
+      (__ \ 'roles).format[List[MmmRole]])(
+    {
+      case (user: MmmUser, roles: List[MmmRole]) => {
+        val res = new MmmIdentity(user, None)
+        res.roles = roles
+        res
+      }
+    }, (u: MmmIdentity) => (u.user, u.roles))
 
 }

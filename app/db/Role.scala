@@ -31,4 +31,27 @@ object Role {
       .toList
   }
 
+  def update(user: MmmIdentity, roles: List[MmmRole]) {
+    DB.withConnection("mmmdb") {
+      implicit c =>
+
+        SQL(
+          """
+            | DELETE FROM User_Role ur
+            | WHERE ur.user_id = {user_id}
+          """.stripMargin)
+        .on { "user_id" -> user.dbId }
+        .executeUpdate()
+
+        (SQL(
+          """
+            | INSERT INTO User_Role(user_id, role_id)
+            | VALUES({user_id}, {role_id})
+          """.stripMargin).asBatch /: roles) {
+          case (sql, r) => sql.addBatchParams(user.dbId, r.dbId)
+        }.execute()
+
+    }
+  }
+
 }
