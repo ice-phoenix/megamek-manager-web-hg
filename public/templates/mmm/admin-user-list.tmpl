@@ -30,7 +30,11 @@
       <td>{{ model.users.get(id).providerId }}</td>
       <td>{{ model.users.get(id).email }}</td>
       <td>{{ model.users.get(id).rolesStr }}</td>
-      <td>...</td>
+      <td>
+        <a class='edit' href='{{ctrl.getEditUserLink(id)}}'>
+          <i class='icon-edit'></i>
+        </a>
+      </td>
     </tr>
     </tbody>
   </table>

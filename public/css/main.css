@@ -15,6 +15,9 @@ body {
   right: -16px;
 }
 
+.edit:hover {
+  background-color: Azure;
+}
 
 
 .alert-group {
