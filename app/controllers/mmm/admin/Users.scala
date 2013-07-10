@@ -1,7 +1,9 @@
 package controllers.mmm.admin
 
-import play.api.libs.json.{Json, JsNull}
+import db.model.MmmIdentity
+import play.api.libs.json.{Json, JsNull, JsSuccess, JsError}
 import play.api.mvc._
+import scala.util.{Failure, Success, Try}
 import securesocial.core.SecureSocial
 import util.{JsonRestFailure, JsonRestSuccess}
 
@@ -43,7 +45,30 @@ object Users
 
   def update(dbId: Long) = Action(parse.json) {
     request =>
-      NotImplemented("Come back later...")
+      request.body
+      .validate[MmmIdentity] match {
+
+        case e: JsError =>
+          BadRequest(
+            JsonRestFailure("JSON object expected")
+          )
+
+        case s: JsSuccess[MmmIdentity] => {
+          val user = s.get
+
+          Try { db.Identity.update(user) } match {
+            case Success(res) =>
+              Ok(
+                JsonRestSuccess("User updated")
+              )
+            case Failure(ex) =>
+              InternalServerError(
+                JsonRestFailure(Json.toJson(ex))
+              )
+          }
+        }
+
+      }
   }
 
 }
