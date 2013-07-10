@@ -1,0 +1,16 @@
+<div class="row-fluid" ng-show="model.user">
+
+  <div class="row-fluid" ng-repeat="field in model.simpleFields">
+    <div class="span2">
+      <span class="pull-right">{{ field.name }}</span>
+    </div>
+    <div class="span10">
+      <input type="text" class="input span12" ng-model="model.user[field.name]" ng-readonly="field.readonly">
+    </div>
+  </div>
+
+  <div class="pull-right">
+    <a class="btn" type="button" ng-click="ctrl.saveUser()">Save changes</a>
+  </div>
+
+</div>

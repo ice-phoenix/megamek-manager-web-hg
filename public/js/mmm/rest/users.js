@@ -4,7 +4,11 @@ angular.module('mmm.rest.users', ['ngResource',
 .factory('Users', ['$resource', 'restUtils', function($resource, restUtils) {
 
   var Users = $resource(
-    '/api/admin/users/:id'
+    '/api/admin/users/:id',
+    {},
+    {
+      'put': { method: 'PUT', params: {id: '@id'} }
+    }
   );
 
   var $in = function(user) {
@@ -13,7 +17,13 @@ angular.module('mmm.rest.users', ['ngResource',
     return res;
   };
 
-  restUtils.attachInOut(Users, $in);
+  var $out = function(user) {
+    var res = angular.copy(user);
+    delete res.rolesStr;
+    return res;
+  };
+
+  restUtils.attachInOut(Users, $in, $out);
 
   return Users;
 
