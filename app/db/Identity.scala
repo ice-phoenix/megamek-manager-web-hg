@@ -149,7 +149,9 @@ object Identity {
     val passwordInfo = ssUser.passwordInfo.map {
       case pi => MmmPasswordInfo(-1, pi.hasher, pi.password, pi.salt)
     }
+
     val identity = new MmmIdentity(user, passwordInfo)
+    identity.roles = mmmUser.roles
 
     update(identity)
   }
@@ -196,6 +198,9 @@ object Identity {
             .on { "salt" -> pi.salt }
             .executeUpdate()
         }
+
+        Role.update(user, user.roles)
+
     }
   }
 
