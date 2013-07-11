@@ -23,6 +23,8 @@ GET     /api/admin/users            controllers.mmm.admin.Users.query
 GET     /api/admin/users/:dbId      controllers.mmm.admin.Users.read(dbId: Long)
 PUT     /api/admin/users/:dbId      controllers.mmm.admin.Users.update(dbId: Long)
 
+GET     /api/admin/roles            controllers.mmm.admin.Roles.query
+
 ########################################################################################################################
 # SecureSocial
 
