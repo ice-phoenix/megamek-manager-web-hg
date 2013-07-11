@@ -17,6 +17,8 @@ angular.module('util.collections', [])
       lut.remove(id);
 
       lut.ids.push(id);
+      lut.ids.sort();
+
       lut.values[id] = e;
 
       return lut;
@@ -38,6 +40,23 @@ angular.module('util.collections', [])
 
     lut.get = function(id) {
       return lut.values[id];
+    };
+
+    lut.getAll = function() {
+      var res = [];
+      for (var k in lut.values) {
+        res.push(lut.values[k]);
+      }
+      return res;
+    };
+
+    lut.head = function() {
+      var id = lut.ids[0];
+      if (angular.isDefined(id)) {
+        return lut.get(id);
+      } else {
+        return null;
+      }
     };
 
     lut.clear = function() {
