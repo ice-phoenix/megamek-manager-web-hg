@@ -24,7 +24,7 @@
       <td>{{ model.servers.get(id).players.join(', ') }}</td>
       <td>{{ model.servers.get(id).status }}</td>
       <td><span active-on-role="Admin">
-        <a class="close danger" ng-click="ctrl.stopServerWithConfirm(id)">&times;</a>
+        <button class="close danger" ng-click="ctrl.stopServerWithConfirm(id)">&times;</button>
       </span></td>
     </tr>
     </tbody>
