@@ -1,7 +1,7 @@
 <div class="row-fluid alert-group" ng-controller="NotificationListCtrl" ng-show="model.notifications.get().length">
-  <button type="button" class="close close-notifications" ng-click="model.notifications.clear()">&times;</button>
+  <button class="close close-notifications" ng-click="model.notifications.clear()">&times;</button>
   <div ng-class="ctrl.getNotificationCls(n)" ng-repeat="n in model.notifications.get()">
     {{ n.msg }}
-    <button type="button" class="close" ng-click="model.notifications.remove(n)">&times;</button>
+    <button class="close" ng-click="model.notifications.remove(n)">&times;</button>
   </div>
 </div>
