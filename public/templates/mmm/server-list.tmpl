@@ -18,7 +18,8 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-class="model.servers.get(id).statusCls" ng-repeat="id in model.servers.ids | orderBy:ctrl.getSortByKey:model.sortByReversed">
+    <tr ng-class="model.servers.get(id).statusCls"
+        ng-repeat="id in model.servers.ids | orderBy:ctrl.getSortByKey:model.sortByReversed">
       <td>{{ model.servers.get(id).port }}</td>
       <td>{{ model.servers.get(id).players.join(', ') }}</td>
       <td>{{ model.servers.get(id).status }}</td>
@@ -30,7 +31,7 @@
   </table>
 
   <div class="input-append pull-right" active-on-role="Admin">
-    <a class="btn" ng-click="ctrl.startServer()">Start server on</a>
+    <button class="btn" ng-click="ctrl.startServer()">Start server on</button>
     <input class="input-mini" type="number" ng-model="model.startServerPort">
   </div>
 

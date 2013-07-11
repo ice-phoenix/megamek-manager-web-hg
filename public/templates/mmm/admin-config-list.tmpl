@@ -1,7 +1,11 @@
 <div class="row-fluid">
 
   <div class="input-append pull-right">
-    <input class="search-query" type="text" placeholder="search by id..." ng-model="model.searchId" ng-disabled="model.isInEditMode">
+    <input class="search-query"
+           type="text"
+           placeholder="search by id..."
+           ng-model="model.searchId"
+           ng-disabled="model.isInEditMode">
     <button class="close" ng-click="ctrl.clearSearchId()" ng-disabled="model.isInEditMode">&times;</button>
   </div>
 
@@ -19,7 +23,9 @@
         {{ key }}
       </td>
       <td style="width: 40%">
-        <edit-on-click value="model.config[key].value" on-edit-on="ctrl.onEditOn()" on-edit-off="ctrl.onEditOff()"></edit-on-click>
+        <edit-on-click value="model.config[key].value"
+                       on-edit-on="ctrl.onEditOn()"
+                       on-edit-off="ctrl.onEditOff()"></edit-on-click>
       </td>
       <td style="width: 20%">
         {{ model.config[key].type }}
@@ -29,7 +35,7 @@
   </table>
 
   <div class="pull-right">
-    <a class="btn" type="button" ng-click="ctrl.saveConfig()" ng-disabled="model.isInEditMode">Save config</a>
+    <button class="btn" ng-click="ctrl.saveConfig()" ng-disabled="model.isInEditMode">Save config</button>
   </div>
 
 </div>
