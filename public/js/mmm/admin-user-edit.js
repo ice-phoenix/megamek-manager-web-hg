@@ -1,6 +1,8 @@
 angular.module('mmm.adminuseredit', ['ui.bootstrap',
+                                     'mmm.rest.roles',
                                      'mmm.rest.users',
                                      'util.auth',
+                                     'util.collections',
                                      'util.modals',
                                      'util.notifications'])
 
@@ -15,8 +17,8 @@ angular.module('mmm.adminuseredit', ['ui.bootstrap',
     });
 }]) // 'config'
 
-.controller('AdminUserEditCtrl', ['$scope', '$routeParams', 'Users', 'modals', 'notifications',
-                         function( $scope,   $routeParams,   Users,   modals,   notifications ) {
+.controller('AdminUserEditCtrl', ['$scope', '$routeParams', 'Roles', 'Users', 'collections', 'modals', 'notifications',
+                         function( $scope,   $routeParams,   Roles,   Users,   collections,   modals,   notifications ) {
 
   $scope.model = {};
   $scope.ctrl = {};
@@ -33,6 +35,9 @@ angular.module('mmm.adminuseredit', ['ui.bootstrap',
     {name: 'authType',   readonly: true}
   ];
 
+  $scope.model.userRoles = collections.lut(function(r) { return r.dbId; });
+  $scope.model.serverRoles = collections.lut(function(r) { return r.dbId; });
+
   /////////////////////////////////////////////////////////////////////////////
   // JSON REST API
   /////////////////////////////////////////////////////////////////////////////
@@ -41,13 +46,20 @@ angular.module('mmm.adminuseredit', ['ui.bootstrap',
     Users.get(
       {id: userId},
       function(json) {
-        $scope.model.user = Users.in(json);
+        var user = Users.in(json);
+        $scope.model.user = user;
+        angular.forEach(user.roles, function(r) {
+          $scope.model.userRoles.add(r);
+        });
+        $updateSelected();
       },
       $scope.$restDefaultErrorHandler
     );
   };
 
   $scope.ctrl.saveUser = function() {
+    $scope.model.user.roles = $scope.model.userRoles.getAll();
+
     Users.put(
       {id: userId},
       Users.out($scope.model.user),
@@ -58,10 +70,45 @@ angular.module('mmm.adminuseredit', ['ui.bootstrap',
     )
   };
 
+  var $loadRoles = function() {
+    Roles.query(
+      {},
+      function(json) {
+        angular.forEach(Roles.in(json), function(r) {
+          $scope.model.serverRoles.add(r);
+        });
+        $updateSelected();
+      },
+      $scope.$restDefaultErrorHandler
+    )
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Editing
+  /////////////////////////////////////////////////////////////////////////////
+
+  var $updateSelected = function() {
+    $scope.model.selectedUserRole = $scope.model.userRoles.head();
+    $scope.model.selectedServerRole = $scope.model.serverRoles.head();
+  };
+
+  $scope.ctrl.addRole = function(role) {
+    if (angular.isUndefined(role)) role = $scope.model.selectedServerRole;
+    $scope.model.userRoles.add(role);
+    $updateSelected();
+  };
+
+  $scope.ctrl.removeRole = function(role) {
+    if (angular.isUndefined(role)) role = $scope.model.selectedUserRole;
+    $scope.model.userRoles.remove(role.dbId);
+    $updateSelected();
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // Init
   /////////////////////////////////////////////////////////////////////////////
 
   $loadUser();
+  $loadRoles();
 
 }]); // 'controller'
