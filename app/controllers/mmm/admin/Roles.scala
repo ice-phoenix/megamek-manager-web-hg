@@ -9,9 +9,11 @@ object Roles
   extends Controller
   with SecureSocial {
 
+  import util.MmmActions._
+
   implicit val implicitMmmRoleFormat = util.MmmJsonifier.MmmRoleFormat
 
-  def query = Action {
+  def query = MmmAuthAction("Admin") {
     Ok(JsonRestSuccess(
       Json.toJson(db.Role.query())
     ))

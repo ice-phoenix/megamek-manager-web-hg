@@ -18,4 +18,32 @@ object MmmActions {
     MmmUserAwareAction(parse.anyContent)(f)
   }
 
+
+  def MmmAuthAction[A](bp: BodyParser[A])(role: String)(f: Request[A] => Result): Action[A] = Action(bp) {
+    implicit request => {
+      SecureSocial.currentUser
+      .map { _.asInstanceOf[MmmIdentity] }
+      .map {
+        _.is(role) match {
+          case true => {
+            f(request)
+          }
+          case false => {
+            Results.Forbidden(
+              JsonRestFailure(s"Required role: $role")
+            )
+          }
+        }
+      }.getOrElse {
+        Results.Unauthorized(
+          JsonRestFailure("Required login")
+        )
+      }
+    }
+  }
+
+  def MmmAuthAction(role: String)(f: => Result): Action[AnyContent] = {
+    MmmAuthAction(parse.anyContent)(role)(_ => f)
+  }
+
 }

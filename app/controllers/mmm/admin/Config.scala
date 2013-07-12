@@ -8,6 +8,7 @@ import util._
 object Config
   extends Controller {
 
+  import util.MmmActions._
   import util.MmmJsonifier._
   import util.config.ConfigManager.{Instance => CMI}
 
@@ -17,14 +18,14 @@ object Config
     )
   }
 
-  def get = Action {
+  def get = MmmAuthAction("Admin") {
     Ok(
       JsonRestSuccess(jsonMap(CMI.asMap()))
     )
   }
 
-  def set = Action(parse.json) {
-    request => {
+  def set = MmmAuthAction(parse.json)("Admin") {
+    implicit request => {
 
       request.body
       .validate[JsObject] match {

@@ -26,13 +26,13 @@ object Users
       }
   }
 
-  def query = Action {
+  def query = MmmAuthAction("Admin") {
     Ok(JsonRestSuccess(
       Json.toJson(db.Identity.query())
     ))
   }
 
-  def read(dbId: Long) = Action {
+  def read(dbId: Long) = MmmAuthAction("Admin") {
     db.Identity.forDbId(dbId) match {
       case Some(user) => {
         Ok(JsonRestSuccess(Json.toJson(user)))
@@ -43,8 +43,8 @@ object Users
     }
   }
 
-  def update(dbId: Long) = Action(parse.json) {
-    request =>
+  def update(dbId: Long) = MmmAuthAction(parse.json)("Admin") {
+    implicit request =>
       request.body
       .validate[MmmIdentity] match {
 

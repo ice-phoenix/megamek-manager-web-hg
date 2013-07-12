@@ -13,6 +13,7 @@ object Servers
   extends Controller {
 
   import play.api.libs.concurrent.Execution.Implicits._
+  import util.MmmActions._
   import util.MmmJsonifier._
 
   implicit val timeout = Timeout(5 seconds)
@@ -30,7 +31,7 @@ object Servers
       )
   }
 
-  def query = Action {
+  def query = MmmAuthAction("User") {
     Async {
       Sender(mmm.RunnerSup, AllServerReport).expects[AllServerStatus] {
         res: AllServerStatus => Ok(JsonRestSuccess(Json.toJson(res)))
@@ -38,7 +39,7 @@ object Servers
     }
   }
 
-  def create(port: Int, password: String) = Action {
+  def create(port: Int, password: String) = MmmAuthAction("Admin") {
     Async {
       Sender(mmm.RunnerSup, StartServer(port, password)).expects[ServerStatus] {
         res: ServerStatus => Created(JsonRestSuccess(Json.toJson(res)))
@@ -49,7 +50,7 @@ object Servers
     }
   }
 
-  def delete(port: Int) = Action {
+  def delete(port: Int) = MmmAuthAction("Admin") {
     Async {
       Sender(mmm.RunnerSup, StopServer(port)).expects[ServerStopped] {
         res: ServerStopped => Ok(JsonRestSuccess(Json.toJson(res)))
