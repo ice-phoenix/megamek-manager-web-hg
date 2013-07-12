@@ -3,7 +3,7 @@ package util
 import db.model.MmmIdentity
 import play.api.mvc.BodyParsers._
 import play.api.mvc._
-import securesocial.core.SecureSocial
+import securesocial.core._
 
 object MmmActions {
 
@@ -20,10 +20,35 @@ object MmmActions {
 
 
   def MmmAuthAction[A](bp: BodyParser[A])(role: String)(f: Request[A] => Result): Action[A] = Action(bp) {
+
+    def decodeHttpBasicAuth(auth: String): Option[(String, String)] = {
+      val base64 = auth.replaceFirst("Basic ", "")
+      val arr = new sun.misc.BASE64Decoder().decodeBuffer(base64)
+      val userPass = new String(arr, "UTF-8").split(":", 2)
+      userPass match {
+        case Array(user, pass) => Some((user, pass))
+        case _ => None
+      }
+    }
+
     implicit request => {
       SecureSocial.currentUser
       .map { _.asInstanceOf[MmmIdentity] }
-      .map {
+      .orElse {
+        request.headers
+        .get("Authorization")
+        .flatMap { decodeHttpBasicAuth }
+        .flatMap {
+          case (user, pass) => {
+            for (
+              u <- UserService.find(UserId(user, "userpass"));
+              pi <- u.passwordInfo;
+              h <- Registry.hashers.get(pi.hasher)
+              if h.matches(pi, pass)
+            ) yield (u.asInstanceOf[MmmIdentity])
+          }
+        }
+      }.map {
         _.is(role) match {
           case true => {
             f(request)
