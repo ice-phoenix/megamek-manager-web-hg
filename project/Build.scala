@@ -9,13 +9,13 @@ object ApplicationBuild extends Build {
   // val scalaHome = Some(file("/usr/share/scala"))
 
   val appName = "megamek-manager-web"
-  val appVersion = "0.1-SNAPSHOT"
+  val appVersion = "0.2-SNAPSHOT"
 
   val appDependencies = Seq(
     // Add your project dependencies here,
     jdbc,
     anorm,
-    "info.ice-phoenix" % "megamek-manager" % "0.1-SNAPSHOT" exclude("org.slf4j", "slf4j-log4j12"),
+    "info.ice-phoenix" % "megamek-manager" % "0.2-SNAPSHOT" exclude("org.slf4j", "slf4j-log4j12"),
     "securesocial" % "securesocial_2.10" % "master-SNAPSHOT"
   )
 
