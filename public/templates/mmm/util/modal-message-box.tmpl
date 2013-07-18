@@ -3,7 +3,7 @@
 </div>
 <div class="modal-body">
   <div class="text-info">{{ model.msg }}</div>
-  <div class="text-error" ng-show="warn.length > 0">{{ model.warn }}</div>
+  <div class="text-error" ng-show="model.warn.length > 0">{{ model.warn }}</div>
 </div>
 <div class="modal-footer">
   <button ng-repeat="btn in model.buttons" ng-click="ctrl.close(btn.result)" class="btn" ng-class="btn.cssClass">
