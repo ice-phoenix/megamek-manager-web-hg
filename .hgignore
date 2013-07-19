@@ -20,3 +20,7 @@ db/*
 conf/crypto.conf
 conf/smtp.conf
 dist-aux/*
+
+node_modules/*
+public/js/min/*
+public/js/all/*
