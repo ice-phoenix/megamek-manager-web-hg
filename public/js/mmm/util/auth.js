@@ -108,9 +108,9 @@ angular.module('util.auth', ['mmm.rest.whoami',
 .provider('authDefer', {
 
   requiredRole: function(role) {
-    return function(authDefer) {
+    return ['authDefer', function(authDefer) {
       return authDefer.requiredRole(role);
-    };
+    }];
   },
 
   $get: ['auth', '$q', function(auth, $q) {
