@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="SBT: info.ice-phoenix:megamek-manager:0.2-SNAPSHOT">
+    <CLASSES>
+      <root url="jar:///opt/play-framework/repository/cache/info.ice-phoenix/megamek-manager/jars/megamek-manager-0.2-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
