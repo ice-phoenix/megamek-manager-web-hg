@@ -1,7 +1,7 @@
 package controllers.mmm.admin
 
 import db.model.MmmIdentity
-import play.api.libs.json.{Json, JsNull, JsSuccess, JsError}
+import play.api.libs.json.{JsNull, JsSuccess, JsError}
 import play.api.mvc._
 import scala.util.{Failure, Success, Try}
 import securesocial.core.SecureSocial
@@ -18,7 +18,7 @@ object Users
     user => implicit request =>
       user match {
         case Some(u) => {
-          Ok(JsonRestSuccess(Json.toJson(u)(WhoAmIWrites)))
+          Ok(JsonRestSuccess(u)(WhoAmIWrites))
         }
         case None => {
           Ok(JsonRestSuccess(JsNull))
@@ -27,15 +27,13 @@ object Users
   }
 
   def query = MmmAuthAction("Admin") {
-    Ok(JsonRestSuccess(
-      Json.toJson(db.Identity.query())
-    ))
+    Ok(JsonRestSuccess(db.Identity.query()))
   }
 
   def read(dbId: Long) = MmmAuthAction("Admin") {
     db.Identity.forDbId(dbId) match {
       case Some(user) => {
-        Ok(JsonRestSuccess(Json.toJson(user)))
+        Ok(JsonRestSuccess(user))
       }
       case None => {
         NotFound(JsonRestFailure("User not found"))
@@ -63,7 +61,7 @@ object Users
               )
             case Failure(ex) =>
               InternalServerError(
-                JsonRestFailure(Json.toJson(ex))
+                JsonRestFailure(ex)
               )
           }
         }

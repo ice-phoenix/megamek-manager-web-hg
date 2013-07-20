@@ -4,7 +4,7 @@ import play.api.libs.json._
 
 object JsonRestSuccess {
 
-  def apply(payload: JsValue): JsValue = payload
+  def apply[A](payload: A)(implicit writes: Writes[A]): JsValue = Json.toJson(payload)
 
   def apply(payload: String): JsValue = apply(Json.obj("msg" -> payload))
 
@@ -12,7 +12,7 @@ object JsonRestSuccess {
 
 object JsonRestFailure {
 
-  def apply(payload: JsValue): JsValue = payload
+  def apply[A](payload: A)(implicit writes: Writes[A]): JsValue = Json.toJson(payload)
 
   def apply(payload: String): JsValue = apply(Json.obj("msg" -> payload))
 

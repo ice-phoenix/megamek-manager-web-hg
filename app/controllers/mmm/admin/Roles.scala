@@ -1,6 +1,5 @@
 package controllers.mmm.admin
 
-import play.api.libs.json.Json
 import play.api.mvc._
 import securesocial.core.SecureSocial
 import util.JsonRestSuccess
@@ -14,9 +13,7 @@ object Roles
   implicit val implicitMmmRoleFormat = util.MmmJsonifier.MmmRoleFormat
 
   def query = MmmAuthAction("Admin") {
-    Ok(JsonRestSuccess(
-      Json.toJson(db.Role.query())
-    ))
+    Ok(JsonRestSuccess(db.Role.query()))
   }
 
 }

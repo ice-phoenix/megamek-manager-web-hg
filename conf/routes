@@ -13,6 +13,7 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 GET     /api/servers                controllers.mmm.Servers.query
 PUT     /api/servers/:port          controllers.mmm.Servers.create(port: Int, password: String ?= "")
+POST    /api/servers/:port          controllers.mmm.Servers.update(port: Int)
 DELETE  /api/servers/:port          controllers.mmm.Servers.delete(port: Int)
 
 GET     /api/admin/config           controllers.mmm.admin.Config.get
