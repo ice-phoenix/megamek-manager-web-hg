@@ -65,6 +65,18 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
     );
   };
 
+  $scope.ctrl.resetServer = function(port) {
+    Servers.update(
+      {port: port},
+      {cmd: "reset"},
+      function(json) {
+        $scope.model.servers.add(Servers.in(json));
+        notifications.addCurrentMsg('success', ['Resetted server on port', port].join(' '));
+      },
+      $scope.$restDefaultErrorHandler
+    );
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // Dialogs
   /////////////////////////////////////////////////////////////////////////////
@@ -74,7 +86,7 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
 
     var title = 'Stop server';
     var msg = ['Stop server on port ', port, '?'].join('');
-    var warn = e.players.length > 0 ? [e.players.length, ' players are ONLINE'].join('') : '';
+    var warn = e.players.length > 0 ? [e.players.length, ' player(s) ONLINE'].join('') : '';
     var buttons = [
       { label:'OK',     result: true,  cssClass: 'btn-danger' },
       { label:'Cancel', result: false, cssClass: 'btn-info' }
@@ -84,6 +96,24 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
 
     confirm.open().then(function(result) {
       if (result) $scope.ctrl.stopServer(port);
+    });
+  };
+
+  $scope.ctrl.resetServerWithConfirm = function(port) {
+    var e = $scope.model.servers.get(port);
+
+    var title = 'Reset server';
+    var msg = ['Reset server on port ', port, '?'].join('');
+    var warn = e.players.length > 0 ? [e.players.length, ' player(s) ONLINE'].join('') : '';
+    var buttons = [
+      { label:'OK',     result: true,  cssClass: 'btn-danger' },
+      { label:'Cancel', result: false, cssClass: 'btn-info' }
+    ];
+
+    var confirm = modals.confirm(title, msg, warn, buttons);
+
+    confirm.open().then(function(result) {
+      if (result) $scope.ctrl.resetServer(port);
     });
   };
 

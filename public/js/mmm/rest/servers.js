@@ -7,7 +7,8 @@ angular.module('mmm.rest.servers', ['ngResource',
     '/api/servers/:port',
     {},
     {
-      'put': { method: 'PUT', params: {port: '@port'} }
+      'put': { method: 'PUT', params: {port: '@port'} },
+      'update': { method: 'POST', params: {port: '@port'} }
     }
   );
 
