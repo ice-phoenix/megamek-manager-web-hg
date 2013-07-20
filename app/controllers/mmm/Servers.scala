@@ -4,7 +4,7 @@ import akka.util.Timeout
 import global.Global
 import info.icephoenix.mmm.data._
 import java.util.concurrent.TimeoutException
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, JsObject, JsSuccess, JsError}
 import play.api.mvc._
 import scala.concurrent.duration._
 import util._
@@ -25,9 +25,9 @@ object Servers
       RequestTimeout(
         JsonRestFailure("Request timed out")
       )
-    case e: Exception =>
+    case ex: Exception =>
       InternalServerError(
-        JsonRestFailure(Json.toJson(e))
+        JsonRestFailure(ex)
       )
   }
 
@@ -42,7 +42,7 @@ object Servers
   def create(port: Int, password: String) = MmmAuthAction("Admin") {
     Async {
       Sender(mmm.RunnerSup, StartServer(port, password)).expects[ServerStatus] {
-        res: ServerStatus => Created(JsonRestSuccess(Json.toJson(res)))
+        res: ServerStatus => Created(JsonRestSuccess(res))
       } recover {
         case s: ServerAlreadyRunningOn =>
           Conflict(JsonRestFailure(s.getMessage))
@@ -50,10 +50,52 @@ object Servers
     }
   }
 
+  def update(port: Int) = MmmAuthAction(parse.json)("Admin") {
+    implicit request => {
+
+      request.body
+      .validate[JsObject] match {
+
+        case e: JsError => {
+          BadRequest(
+            JsonRestFailure("JSON object expected")
+          )
+        }
+
+        case s: JsSuccess[JsObject] => {
+          (s.get \ "cmd")
+          .asOpt[String]
+          .flatMap {
+            _ match {
+              case "reset" => Some(ResetServer(port))
+              case _ => None
+            }
+          }.map {
+            case msg => {
+              Async {
+                Sender(mmm.RunnerSup, msg).expects[ServerOnline] {
+                  res: ServerOnline => Ok(JsonRestSuccess(res))
+                } recover {
+                  case s: ServerNotRunningOn =>
+                    NotFound(JsonRestFailure(s.getMessage))
+                } recover defaultRecover
+              }
+            }
+          }.getOrElse {
+            UnprocessableEntity(
+              JsonRestFailure("Invalid cmd format")
+            )
+          }
+        }
+
+      }
+    }
+  }
+
   def delete(port: Int) = MmmAuthAction("Admin") {
     Async {
       Sender(mmm.RunnerSup, StopServer(port)).expects[ServerStopped] {
-        res: ServerStopped => Ok(JsonRestSuccess(Json.toJson(res)))
+        res: ServerStopped => Ok(JsonRestSuccess(res))
       } recover {
         case s: ServerNotRunningOn =>
           NotFound(JsonRestFailure(s.getMessage))
