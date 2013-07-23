@@ -3,6 +3,7 @@ package util
 import db.model.MmmIdentity
 import db.model.basic._
 import info.icephoenix.mmm.data._
+import org.joda.time.Period
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
@@ -44,6 +45,24 @@ object MmmJsonifier {
       Json.toJson(s"$exType: $exMsg")
     }
   }
+
+  def ZeroNone(i: Int) = if (i == 0) None else Some(i)
+
+  implicit val JodaTimePeriodWrites: Writes[Period] =
+    ((__ \ 'years).writeNullable[Int] ~
+      (__ \ 'months).writeNullable[Int] ~
+      (__ \ 'days).writeNullable[Int] ~
+      (__ \ 'hours).writeNullable[Int] ~
+      (__ \ 'minutes).writeNullable[Int] ~
+      (__ \ 'seconds).writeNullable[Int]) {
+      p: Period => (
+        ZeroNone(p.getYears),
+        ZeroNone(p.getMonths),
+        ZeroNone(p.getDays),
+        ZeroNone(p.getHours),
+        ZeroNone(p.getMinutes),
+        ZeroNone(p.getSeconds))
+    }
 
   implicit val ServerOnlineWrites = Json.writes[ServerOnline].mkTypeTagged()
   implicit val ServerTimedOutWrites = Json.writes[ServerTimedOut].mkTypeTagged()
