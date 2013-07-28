@@ -46,22 +46,25 @@ object MmmJsonifier {
     }
   }
 
-  def ZeroNone(i: Int) = if (i == 0) None else Some(i)
+  def ZeroNone(i: Long) = if (i == 0) None else Some(i)
 
   implicit val JodaTimePeriodWrites: Writes[Period] =
-    ((__ \ 'years).writeNullable[Int] ~
-      (__ \ 'months).writeNullable[Int] ~
-      (__ \ 'days).writeNullable[Int] ~
-      (__ \ 'hours).writeNullable[Int] ~
-      (__ \ 'minutes).writeNullable[Int] ~
-      (__ \ 'seconds).writeNullable[Int]) {
+    ((__ \ 'years).writeNullable[Long] ~
+      (__ \ 'months).writeNullable[Long] ~
+      (__ \ 'days).writeNullable[Long] ~
+      (__ \ 'hours).writeNullable[Long] ~
+      (__ \ 'minutes).writeNullable[Long] ~
+      (__ \ 'seconds).writeNullable[Long] ~
+      (__ \ 'total).writeNullable[Long]) {
       p: Period => (
         ZeroNone(p.getYears),
         ZeroNone(p.getMonths),
         ZeroNone(p.getDays),
         ZeroNone(p.getHours),
         ZeroNone(p.getMinutes),
-        ZeroNone(p.getSeconds))
+        ZeroNone(p.getSeconds),
+        ZeroNone(p.toStandardDuration.getMillis)
+        )
     }
 
   implicit val ServerOnlineWrites = Json.writes[ServerOnline].mkTypeTagged()

@@ -23,6 +23,14 @@ angular.module('mmm.rest.servers', ['ngResource',
     res.statusCls = srv.type === 'server-online' ? 'success' :
                     srv.type === 'server-timed-out' ? 'warning' :
                     'error';
+    res.uptime = {
+      str: restUtils.formatDateTime(srv.ctime),
+      value: srv.ctime.total
+    };
+    res.modified = {
+      str: restUtils.formatDateTime(srv.mtime),
+      value: srv.mtime.total
+    };
     return res;
   };
 

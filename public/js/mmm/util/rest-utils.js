@@ -24,6 +24,27 @@ angular.module('util.restutils', [])
     };
   };
 
+  service.formatDateTime = function(dateTime) {
+    var $dateTime = dateTime || {};
+
+    var times = [
+      {key: 'years',   singular: 'year'},
+      {key: 'months',  singular: 'month'},
+      {key: 'days',    singular: 'day'},
+      {key: 'hours',   singular: 'hour'},
+      {key: 'minutes', singular: 'minute'},
+      {key: 'seconds', singular: 'second'}
+    ];
+    for (var i = 0; i < times.length; ++i) {
+      var t = times[i];
+      var value = $dateTime[t.key];
+      if (angular.isDefined(value)) {
+        return [value, value === 1 ? t.singular : t.key].join(' ');
+      }
+    }
+    return '1 clock tick';
+  };
+
   return service;
 
 }); // 'factory'

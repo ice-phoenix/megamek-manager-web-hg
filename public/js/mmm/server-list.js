@@ -144,12 +144,13 @@ angular.module('mmm.serverlist', ['ui.bootstrap',
 
   $scope.ctrl.getSortByKey = function(id) {
     var e = $scope.model.servers.get(id);
-    switch ($scope.model.sortBy) {
-      case 'port': return e.port;
-      case 'players': return e.players.length;
-      case 'status': return e.status;
-      default: return 0;
-    }
+    var prop = $scope.model.sortBy;
+    var value = e[prop];
+
+    if (angular.isArray(value)) return value.length;
+    if (angular.isObject(value)) return value.value;
+    if (angular.isDefined(value)) return value;
+    return 0;
   };
 
   /////////////////////////////////////////////////////////////////////////////
