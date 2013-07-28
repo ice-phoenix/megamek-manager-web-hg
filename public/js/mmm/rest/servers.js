@@ -24,7 +24,7 @@ angular.module('mmm.rest.servers', ['ngResource',
                     srv.type === 'server-timed-out' ? 'warning' :
                     'error';
     res.uptime = {
-      str: restUtils.formatDateTime(srv.ctime),
+      str: restUtils.formatDateTimeFull(srv.ctime),
       value: srv.ctime.total
     };
     res.modified = {

@@ -1,4 +1,5 @@
-angular.module('mmm', ['ui.bootstrap',
+angular.module('mmm', ['js.ext',
+                       'ui.bootstrap',
                        'mmm.adminconfiglist',
                        'mmm.adminpanel',
                        'mmm.adminuseredit',

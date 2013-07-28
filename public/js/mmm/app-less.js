@@ -1,4 +1,5 @@
-angular.module('mmm', ['ui.bootstrap',
+angular.module('mmm', ['js.ext',
+                       'ui.bootstrap',
                        'util.auth',
                        'util.breadcrumbs',
                        'util.exceptionhandler',

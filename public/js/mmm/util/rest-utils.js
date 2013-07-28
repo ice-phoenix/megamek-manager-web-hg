@@ -24,17 +24,18 @@ angular.module('util.restutils', [])
     };
   };
 
+  var times = [
+    {key: 'years',   singular: 'year'},
+    {key: 'months',  singular: 'month'},
+    {key: 'days',    singular: 'day'},
+    {key: 'hours',   singular: 'hour'},
+    {key: 'minutes', singular: 'minute'},
+    {key: 'seconds', singular: 'second'}
+  ];
+
   service.formatDateTime = function(dateTime) {
     var $dateTime = dateTime || {};
 
-    var times = [
-      {key: 'years',   singular: 'year'},
-      {key: 'months',  singular: 'month'},
-      {key: 'days',    singular: 'day'},
-      {key: 'hours',   singular: 'hour'},
-      {key: 'minutes', singular: 'minute'},
-      {key: 'seconds', singular: 'second'}
-    ];
     for (var i = 0; i < times.length; ++i) {
       var t = times[i];
       var value = $dateTime[t.key];
@@ -43,6 +44,20 @@ angular.module('util.restutils', [])
       }
     }
     return '1 clock tick';
+  };
+
+  service.formatDateTimeFull = function(dateTime) {
+    var $dateTime = dateTime || {};
+
+    var res = [];
+
+    for (var i = 0; i < times.length; ++i) {
+      var t = times[i];
+      var value = ($dateTime[t.key] || 0) + '';
+      res.push(value.pad(2));
+    }
+
+    return res.join(':');
   };
 
   return service;
